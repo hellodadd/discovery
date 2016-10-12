@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:id="@+id/discovery_root_view"
+    android:fitsSystemWindows="false"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:splitMotionEvents="false">
+
+<com.wuba.testamaze.HoloScene
+    android:id="@+id/folder_radar"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+</com.wuba.testamaze.HoloScene>
+
+    <ImageView android:layout_gravity="bottom"
+        android:id="@+id/discovery_menu_bg"
+        android:background="@drawable/discovery_dock_menu_bg"
+        android:layout_width="fill_parent"
+        android:layout_height="80.0dip"
+        android:alpha="0.75" />
+    <com.wuba.testamaze.CircleMenu
+        android:id="@+id/discovery_circlemenu"
+        android:background="@android:color/transparent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+</FrameLayout>

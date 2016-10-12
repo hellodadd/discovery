@@ -1,0 +1,8 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="all_apps_viewpager_indicate_height">24.0dip</dimen>
+    <dimen name="common_corner_radius">2.0dip</dimen>
+</resources>
