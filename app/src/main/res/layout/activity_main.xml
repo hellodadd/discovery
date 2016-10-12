@@ -10,11 +10,11 @@
     android:layout_height="fill_parent"
     android:splitMotionEvents="false">
 
-<com.wuba.testamaze.HoloScene
+<com.freeme.discovery.view.RadarScene
     android:id="@+id/folder_radar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-</com.wuba.testamaze.HoloScene>
+</com.freeme.discovery.view.RadarScene>
 
     <ImageView android:layout_gravity="bottom"
         android:id="@+id/discovery_menu_bg"
@@ -22,7 +22,7 @@
         android:layout_width="fill_parent"
         android:layout_height="80.0dip"
         android:alpha="0.75" />
-    <com.wuba.testamaze.CircleMenu
+    <com.freeme.discovery.view.CircleMenu
         android:id="@+id/discovery_circlemenu"
         android:background="@android:color/transparent"
         android:layout_width="fill_parent"

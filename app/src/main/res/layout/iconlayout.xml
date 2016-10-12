@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wuba.testamaze.IconView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.freeme.discovery.view.IconView.testamaze.IconView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/iconLayout"
     android:background="#00000000"
     android:layout_width="80.0dip"
@@ -14,4 +14,4 @@
         android:scaleType="fitXY"
         android:src="@drawable/newspage_default_icon"/>
 
-</com.wuba.testamaze.IconView>
+</com.freeme.discovery.view.IconView.testamaze.IconView>
