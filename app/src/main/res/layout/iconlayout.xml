@@ -12,6 +12,7 @@
         android:layout_width="48dp"
         android:layout_height="48dp"
         android:scaleType="fitXY"
+        android:background="@drawable/discovery_radar_lock_on"
         android:src="@drawable/newspage_default_icon"/>
 
 </com.freeme.discovery.view.IconView>
