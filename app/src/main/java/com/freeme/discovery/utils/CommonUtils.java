@@ -12,4 +12,8 @@ public class CommonUtils {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
+
+    public static double acos(double a, double b, double c){
+        return Math.acos((a * a + b * b - c * c) / (b * (2.0D * a)));
+    }
 }

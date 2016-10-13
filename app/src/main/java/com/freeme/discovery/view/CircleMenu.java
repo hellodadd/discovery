@@ -1,24 +1,25 @@
 package com.freeme.discovery.view;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.RelativeLayout;
+
+import com.freeme.discovery.utils.CommonUtils;
 
 
 public class CircleMenu extends RelativeLayout {
-
-    // Child sizes
-    private int childWidth = 0;
-    private int childHeight = 0;
-
-    // Sizes of the ViewGroup
-    private int circleWidth, circleHeight;
-    private int radius = 0;
 
     private float angle = 270;
 
@@ -40,9 +41,26 @@ public class CircleMenu extends RelativeLayout {
     private int mOperationHeight;
     private int mScanContenttype;
 
-    private double mDegrees;
+    private Rect touchRect = new Rect();
+
+    private double mRadian;
 
     private View mView;
+
+    private float downX;
+    private float downY;
+    private float lastX;
+    private float lastY;
+
+    private boolean mIsRotating;
+
+    private  float mSlop;
+
+    private Point mPoint1 = new Point();
+    private Point mPoint2 = new Point();
+    private Point mPoint3 = new Point();
+
+    private boolean mIsSwitchView;
 
 
     /**
@@ -65,6 +83,8 @@ public class CircleMenu extends RelativeLayout {
         super(context, attrs, defStyle);
 
         mContext = context;
+
+        mSlop = ViewConfiguration.get(mContext).getScaledTouchSlop();
     }
 
     private int getDefaultWidth() {
@@ -72,6 +92,136 @@ public class CircleMenu extends RelativeLayout {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         wm.getDefaultDisplay().getMetrics(displayMetrics);
         return Math.min(displayMetrics.widthPixels, displayMetrics.heightPixels);
+    }
+
+    public boolean onInterceptTouchEvent(MotionEvent motionEvent){
+        return true;
+    }
+
+
+    public boolean onTouchEvent(MotionEvent motionEvent){
+        double distance1,distance2,distance3;
+        downX = motionEvent.getX();
+        downY = motionEvent.getY();
+
+        mPoint3.x = (int)downX;
+        mPoint3.y = (int)downY;
+
+        int event = motionEvent.getAction();
+        switch (event){
+            case MotionEvent.ACTION_DOWN:
+                lastX = motionEvent.getX();
+                lastY = motionEvent.getY();
+
+                if(!touchRect.contains((int)lastX, (int)lastY)){
+                    return false;
+                }
+
+                mPoint2.x = (int)lastX;
+                mPoint2.y = (int)lastY;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                distance1 = Math.hypot(lastX - mWidth/2, lastY);
+                distance2 = Math.hypot(downX - mWidth/2, downY);
+                distance3 = Math.hypot(downX - lastX, downY - lastY);
+                int direction = rotatedirection(mPoint2.x - mPoint1.x, mPoint2.y - mPoint1.y,
+                        mPoint3.x - mPoint2.x, mPoint3.y - mPoint2.y);
+                if(direction == 0){
+                    mRadian -= CommonUtils.acos(distance1,distance2,distance3);
+                }else {
+                    mRadian += CommonUtils.acos(distance1, distance2, distance3);
+                }
+                mIsRotating = true;
+               // if(Math.abs(downX - lastX) > mSlop && Math.abs(downY - lastY) < mSlop)
+
+                switchView((int) (downX - lastX));
+
+                setViewDegrees(mRadian);
+
+                lastX = downX;
+                lastY = downY;
+
+                mPoint2.x = (int)downX;
+                mPoint2.y = (int)downY;
+                break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                rotateCircleMenu();
+                break;
+        }
+
+
+        return true;//super.onInterceptTouchEvent(motionEvent);
+    }
+
+    private static int rotatedirection(int a, int b, int c, int d){
+        if(a * d - b * c > 0){
+            return 0;
+        }else{
+            return 1;
+        }
+    }
+
+    private void rotateCircleMenu(){
+        if (Math.toDegrees(mRadian) < Math.abs(Math.toDegrees(mPosition[1]) / 2.0D)) {
+            if (mView == mChildView[0]){
+                rotateCircleMenuAni(mRadian, 0.0D);
+            }else{
+                rotateCircleMenuAni(mRadian, Math.abs(mPosition[1]));
+            }
+        }else{
+            if (mView == mChildView[0]){
+               rotateCircleMenuAni(mRadian, 0.0D);
+            }else{
+                rotateCircleMenuAni(mRadian, Math.abs(mPosition[1]));
+            }
+        }
+    }
+
+    private void rotateCircleMenuAni(final double a, double b){
+        ValueAnimator animator = ValueAnimator.ofFloat(new float[] { 0.0F, 1.0F });
+        double degrees = b - a;
+        animator.setDuration((long) (3000.0F * (float)(Math.abs(degrees) / 3.141592653589793D)));
+        animator.setInterpolator(new AccelerateDecelerateInterpolator());
+        animator.addListener(new AnimatorListenerAdapter() {
+            public final void onAnimationCancel(Animator paramAnimator) {
+                mIsRotating = false;
+            }
+
+            public final void onAnimationEnd(Animator paramAnimator) {
+                if(mIsSwitchView){
+                    setViewDegrees(0);
+                }else{
+                    setViewDegrees(1);
+                }
+            }
+
+            public final void onAnimationStart(Animator paramAnimator) {
+                mIsRotating = true;
+            }
+        });
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float value = ((Float)animation.getAnimatedValue()).floatValue();
+                setViewDegrees(1 + (double) value * mWidth);
+            }
+        });
+        animator.start();
+
+    }
+
+    private void switchView(int dis){
+       for(int i = 0; i < mChildCount; i++){
+           View view = getChildAt(i);
+           float x = view.getX();
+           int w = view.getWidth();
+           if((((dis >= 0) || (x >= 0.0F))) && (((x + w <= mWidth) || (dis <= 0)))){
+               mIsSwitchView = false;
+           }
+       }
+
+        mIsSwitchView = true;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -99,6 +249,12 @@ public class CircleMenu extends RelativeLayout {
         setMeasuredDimension(mWidth, mHeight);
 
         mMenuHeight = mHeight - mBottomMargin;
+
+        mPoint1.x = mWidth / 2;
+        mPoint1.y = 0;
+
+
+        touchRect.set(0, mHeight - mOperationHeight, mWidth, mHeight);
 
 
     }
@@ -130,62 +286,23 @@ public class CircleMenu extends RelativeLayout {
             if(i != 0){
                 float menuHeight = childviewLeft2 + width / 2 - mWidth / 2;
                 mPosition[i] = (-Math.atan(menuHeight / mMenuHeight));
-                //Math.cos(mPosition[i]);
             }
             childview.layout(childviewLeft, childviewTop, childviewLeft + width, childviewTop + height);
             childviewLeft2 += width + mItemMargin;
         }
 
-        setViewDegrees(0);
-
-        /*int layoutWidth = r - l;
-
-        // Laying out the child views
-        final int childCount = getChildCount();
-        int left, top;
-
-        comuteRadius(layoutWidth);
-        childHeight = childWidth = (int) (radius / 5);
-
-        float angleDelay = 30;//360f / childCount;
-
-        angle = -270;
-
-        for (int i = 0; i < childCount; i++) {
-            final View child = (View) getChildAt(i);
-            if (child.getVisibility() == GONE) {
-                continue;
-            }
-
-            if (angle > 360) {
-                angle -= 360;
-            } else if (angle < 0) {
-                angle += 360;
-            }
-
-           // child.setAngle(angle);
-           // child.setPosition(i);
-
-            left = (int) (((getWidth() / 2) - childWidth / 2) + radius
-                    * Math.cos(Math.toRadians(angle)));
-            top = (int) (radius + radius* Math.sin(Math.toRadians(angle)) + childHeight / 2);
-
-            child.layout(left, top, left + childWidth, top + childHeight);
-
-            angle += angleDelay;
-        }
-        */
+        setViewDegrees(1);
     }
 
     public final void setViewDegrees(int degrees){
         if (degrees == 0) {
-            setViewDegrees(0.0D);
-            mDegrees = 0.0D;
+            mRadian = 0.0D;
             mView = mChildView[0];
+            setViewDegrees(0.0D);
         }else{
             mView = mChildView[1];
-            setViewDegrees(mPosition[1]);
-            mDegrees = Math.abs(mPosition[1]);
+            mRadian = Math.abs(mPosition[1]);
+            setViewDegrees(mRadian);
 
         }
     }
@@ -202,11 +319,6 @@ public class CircleMenu extends RelativeLayout {
             view.setRotation(-(float)d2);
             view.setAlpha(1.0F - (float)(Math.abs(d2) / 20.0D));
         }
-    }
-
-    private void comuteRadius(int width) {
-        int outRadius = (int) (((float) (Math.sqrt(3) / 3)) * width);
-        this.radius = outRadius - outRadius/10;
     }
 
 

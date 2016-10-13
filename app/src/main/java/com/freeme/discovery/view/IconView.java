@@ -14,6 +14,8 @@ public class IconView extends FrameLayout{
     private int x;
     private int y;
 
+    private int radius;
+
     public IconView(Context context) {
         this(context, null, 0);
     }
@@ -41,5 +43,13 @@ public class IconView extends FrameLayout{
 
     public int getIconViewY(){
         return y;
+    }
+
+    public void setRadius(int r){
+        radius = r;
+    }
+
+    public int getRadius(){
+        return radius;
     }
 }

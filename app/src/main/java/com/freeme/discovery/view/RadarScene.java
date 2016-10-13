@@ -135,7 +135,7 @@ public class RadarScene extends FrameLayout {
         mBottomCicyleView.setPivotY(width / 2.0F);
         mBottomCicyleView.setTranslationY(width / 2.0F);
 
-        addAppView();
+        //addAppView();
 
         startRadarScanAni();
 
@@ -193,6 +193,8 @@ public class RadarScene extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom){
         super.onLayout(changed, left, top, right, bottom);
 
+        Log.d("zwb", "zhangwuba ---------onLayout---------");
+
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
 
@@ -200,47 +202,21 @@ public class RadarScene extends FrameLayout {
 
             View view = getChildAt(i);
             if("app".equals(view.getTag())){
+                IconView iconView = (IconView)view;
                 mStartAngle %= 360;
                 int x, y;
-                float tmp = 800;
+                float tmp = iconView.getRadius();
                 x = (int) Math.round(tmp
                         * Math.cos(Math.toRadians(mStartAngle)));
                 y = (int) Math.round(tmp
                         * Math.sin(Math.toRadians(mStartAngle)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                view.layout(l, t, l + 200, t + 200);
-                IconView iconView = (IconView)view;
+                iconView.layout(l, t, l + 200, t + 200);
                 iconView.setIconViewXY(l, t);
                 mStartAngle += angleDelay;
             }
         }
-
-        float angleDelay2 = 360 / (20 - 1);
-
-        for(int i = 0; i < childCount; i++){
-
-            mStartAngle %= 360;
-
-            View view = getChildAt(i);
-            Log.d("zwb", "zhangwuba ---------ddd- = " +view.getTag());
-            if("app2".equals(view.getTag())){
-                int x, y;
-                float tmp = 1200;
-                x = (int) Math.round(tmp
-                        * Math.cos(Math.toRadians(mStartAngle)));
-                y = (int) Math.round(tmp
-                        * Math.sin(Math.toRadians(mStartAngle)));
-                int l = LcdWidth / 2 + x;
-                int t = LcdHeight -y;
-                view.layout(l, t, l + 200, t + 200);
-                IconView iconView = (IconView)view;
-                iconView.setIconViewXY(l, t);
-                mStartAngle += angleDelay2;
-            }
-        }
-
-
 
     }
 
@@ -358,13 +334,13 @@ public class RadarScene extends FrameLayout {
             //mRotateAngle -= angle; //(360.0F + ((Float)ac.getAnimatedValue()).floatValue()) % 360.0F;
             //Log.d("zwb", "  --------------updateAngle--------------  " + mRotateAngle);
             mRotateAngle = angle;
-            mBottomCicyleView.setRotation(angle);
+            mBottomCicyleView.setRotation(-angle);
 
 
             // mHandler.removeMessages(2);
             // mHandler.sendEmptyMessage(2);
 
-            mStartAngle = -angle;
+            mStartAngle = angle;
             float angleDelay = 360 / (20 - 1);
 
             for(int i = 0; i < getChildCount(); i++){
@@ -373,16 +349,16 @@ public class RadarScene extends FrameLayout {
 
                 View view = getChildAt(i);
                 if("app".equals(view.getTag())){
+                    IconView iconView = (IconView) view;
                     mStartAngle %= 360;
                     int x, y;
-                    float tmp = 800;
+                    float tmp = iconView.getRadius();
                     x = (int) Math.round(tmp
                             * Math.cos(Math.toRadians(mStartAngle)));
                     y = (int) Math.round(tmp
                             * Math.sin(Math.toRadians(mStartAngle)));
                     int l = LcdWidth / 2 + x;
                     int t = LcdHeight -y;
-                    IconView iconView = (IconView) view;
                     iconView.setTranslationX(l - iconView.getIconViewX());
                     iconView.setTranslationY(t - iconView.getIconViewY());
                     //view.setScrollX(100);
@@ -419,7 +395,7 @@ public class RadarScene extends FrameLayout {
             case MotionEvent.ACTION_MOVE:
                 float d = getDistance(lastX, lastY, x, y);
                 float d2 = getDistance(mViewCenterX, getMeasuredHeight(), x, y);
-                float d3 = getDistance(mViewCenterX, mViewWidth, lastX, lastY);
+                float d3 = getDistance(mViewCenterX, mViewHeight, lastX, lastY);
                 float degrees = (float)Math.toDegrees(Math.acos((d3 * d3 +
                         d2 * d2 - d * d) / (2.0D * d3 * d2)));
                 //mHandler.sendEmptyMessage(0);
@@ -502,6 +478,8 @@ public class RadarScene extends FrameLayout {
                         new AsyncImageCache.NetworkImageGenerator(hotApp
                                 .getIconUrl(), hotApp.getIconUrl()), 0);
                 view.setTag("app");
+
+                view.setRadius((int) (800 + Math.random()*400));
 
 
                 addView(view,new FrameLayout.LayoutParams(-2, -2));
