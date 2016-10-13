@@ -403,7 +403,7 @@ public class RadarScene extends FrameLayout {
                     degrees = 0.0f;
                 }
 
-                if (x - lastX < 0) {
+                if (lastX - x < 0) {
                     degrees = -degrees;
                 }
 
