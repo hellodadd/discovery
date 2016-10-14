@@ -10,11 +10,78 @@
     android:layout_height="fill_parent"
     android:splitMotionEvents="false">
 
+
+
 <com.freeme.discovery.view.RadarScene
     android:id="@+id/folder_radar"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 </com.freeme.discovery.view.RadarScene>
+
+    <LinearLayout
+        android:gravity="center_horizontal"
+        android:layout_gravity="center|right|top"
+        android:orientation="vertical"
+        android:id="@+id/discovery_radar_sidebar"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/discovery_radar_sidebar_bg">
+        <ImageView
+            android:id="@+id/discovery_radar_overflow_menu_icon"
+            android:layout_width="@dimen/discovery_right_navigation_width"
+            android:layout_height="@dimen/discovery_right_navigation_width"
+            android:layout_marginBottom="2.0dip" />
+        <ImageView
+            android:id="@+id/discovery_radar_share_icon"
+            android:layout_width="@dimen/discovery_right_navigation_width"
+            android:layout_height="@dimen/discovery_right_navigation_width"
+            android:layout_marginBottom="2.0dip" />
+        <ImageView
+            android:id="@+id/discovery_radar_pilot_mode"
+            android:visibility="gone"
+            android:layout_width="@dimen/discovery_right_navigation_width"
+            android:layout_height="@dimen/discovery_right_navigation_width"
+            android:layout_marginBottom="2.0dip" />
+        <ImageView
+            android:id="@+id/discovery_radar_refresh"
+            android:layout_width="@dimen/discovery_right_navigation_width"
+            android:layout_height="@dimen/discovery_right_navigation_width"
+            android:layout_marginBottom="2.0dip" />
+        <ImageView
+            android:id="@+id/discovery_radar_favorite"
+            android:layout_width="@dimen/discovery_right_navigation_width"
+            android:layout_height="@dimen/discovery_right_navigation_width" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="48.0dip"
+            android:layout_marginTop="8.0dip">
+            <ImageView
+                android:layout_gravity="center_vertical"
+                android:id="@+id/discovery_radar_back"
+                android:layout_width="44.0dip"
+                android:layout_height="44.0dip"
+                android:src="@drawable/btn_back_normal"/>
+            <TextView
+                android:textSize="18.0sp"
+                android:textColor="@color/discovery_title"
+                android:gravity="center|left"
+                android:id="@+id/discovery_radar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4.0dip"
+                android:text="@string/app_name"
+                android:textAllCaps="true" />
+        </LinearLayout>
+    </FrameLayout>
 
     <ImageView android:layout_gravity="bottom"
         android:id="@+id/discovery_menu_bg"

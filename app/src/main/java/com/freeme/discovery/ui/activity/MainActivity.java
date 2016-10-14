@@ -2,12 +2,16 @@ package com.freeme.discovery.ui.activity;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,6 +23,7 @@ import com.freeme.discovery.base.MessageCode;
 import com.freeme.discovery.bean.apps.HotApp;
 import com.freeme.discovery.bean.apps.HotAppBody;
 import com.freeme.discovery.ui.adapter.MyAdapter;
+import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.NetworkUtils;
 import com.freeme.discovery.view.CircleMenu;
 import com.freeme.discovery.view.RadarScene;
@@ -40,13 +45,25 @@ public class MainActivity extends AppCompatActivity {
     private CircleMenu mCircleMenu;
     private TextView mAppSearch;
     private TextView mVideoSearch;
+    private ImageView mBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
-        //getWindow().addFlags(67328);
+
         mHoloScene = (RadarScene) findViewById(R.id.folder_radar);
+
+        mBack = (ImageView)findViewById(R.id.discovery_radar_back);
+        mBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         mCircleMenu = (CircleMenu)findViewById(R.id.discovery_circlemenu);
         mCircleMenu.setMenuBottomMargin(dip2px(this, 20.0f));
@@ -58,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
         mVideoSearch.setAllCaps(true);
         mVideoSearch.setGravity(17);
         mVideoSearch.setTextSize(26);
+        CommonUtils.setTextShadow(mVideoSearch,
+                getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
         RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
         mCircleMenu.addView(mVideoSearch, mVidoLayoutParams);
 
@@ -66,6 +85,8 @@ public class MainActivity extends AppCompatActivity {
         mAppSearch.setAllCaps(true);
         mAppSearch.setGravity(17);
         mAppSearch.setTextSize(26);
+        CommonUtils.setTextShadow(mAppSearch,
+                getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
         RelativeLayout.LayoutParams mAppLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
         mCircleMenu.addView(mAppSearch, mAppLayoutParams);
 

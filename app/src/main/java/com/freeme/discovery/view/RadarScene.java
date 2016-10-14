@@ -30,6 +30,7 @@ import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.freeme.discovery.R;
 import com.freeme.discovery.bean.apps.HotApp;
@@ -481,6 +482,17 @@ public class RadarScene extends FrameLayout {
 
                 view.setRadius((int) (800 + Math.random()*400));
 
+                TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
+                textView.setText(hotApp.getApkName());
+
+                ImageView imageView = (ImageView)view.findViewById(R.id.animg);
+                imageView.setPivotX(imageView.getWidth()/2);
+                imageView.setPivotY(imageView.getWidth()/2);
+                imageView.setTranslationY(imageView.getWidth() / 2.0F);
+
+                ObjectAnimator ani = ObjectAnimator.ofFloat(imageView, "rotation", new float[] { -95.0F, 160.0F });
+                ani.setDuration(1000L);
+                ani.start();
 
                 addView(view,new FrameLayout.LayoutParams(-2, -2));
             }

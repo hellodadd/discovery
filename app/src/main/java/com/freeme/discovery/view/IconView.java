@@ -1,11 +1,15 @@
 package com.freeme.discovery.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.freeme.discovery.R;
 
@@ -22,6 +26,10 @@ public class IconView extends FrameLayout{
 
     private Context mContext;
 
+    private Paint mPaint;
+
+    private ImageView circleAniImage;
+
     public IconView(Context context) {
         this(context, null, 0);
     }
@@ -36,6 +44,8 @@ public class IconView extends FrameLayout{
         mContext = context;
 
         setWillNotDraw(false);
+
+        mPaint = new Paint();
     }
 
     public void onDraw(Canvas canvas){
@@ -43,13 +53,28 @@ public class IconView extends FrameLayout{
 
         Log.i("IconView", " ------- onDraw------");
 
-        Drawable drawable = mContext.getResources().
-                getDrawable(R.drawable.discovery_radar_icon_bg);
-        //drawable.setBounds(400,400, 600, 600);
+        Drawable bg = mContext.getResources().
+               getDrawable(R.drawable.discovery_radar_icon_bg);
+        bg.setBounds(0,0, 200, 200);
 
-        drawable.draw(canvas);
+        Drawable lcok = mContext.getResources().
+                getDrawable(R.drawable.discovery_radar_lock_on);
+        lcok.setBounds(0,0, 200, 200);
 
-        canvas.restoreToCount(1);
+        //canvas.rotate(180);
+
+        bg.draw(canvas);
+        //lcok.draw(canvas);
+
+
+
+
+
+        //canvas.restoreToCount(1);
+
+       // Bitmap bitmap = BitmapFactory.decodeResource(
+                //mContext.getResources(), R.drawable.discovery_radar_icon_bg);
+        //canvas.drawBitmap(bitmap, 0, 0, mPaint);
     }
 
     public void setIconViewXY(int x, int y){
@@ -71,6 +96,14 @@ public class IconView extends FrameLayout{
 
     public int getRadius(){
         return radius;
+    }
+
+    public void setCircleAniImage(ImageView view){
+        circleAniImage = view;
+    }
+
+    public ImageView getCircleAniImage(){
+        return circleAniImage;
     }
 
     public void requestLayout(){

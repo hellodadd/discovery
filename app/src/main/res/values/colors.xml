@@ -8,4 +8,16 @@
     <color name="discovery_fog">#ff111111</color>
     <color name="discovery_radar_indicator">#ff527a96</color>
     <color name="discovery_radar_wave">#ff00ffbf</color>
+
+    <color name="discovery_btn_text">#ff4dffa6</color>
+    <color name="discovery_icon_text_a">#fff9da00</color>
+    <color name="discovery_icon_text_b">#ffc5305c</color>
+    <color name="discovery_icon_text_dark">#ff91bedd</color>
+    <color name="discovery_icon_text_light">#ff46c6f6</color>
+    <color name="discovery_shadow">#334dffa6</color>
+    <color name="discovery_title">#ff57fcaa</color>
+    <color name="discovery_title_bg">#f01b2831</color>
+    <color name="discovery_title_delighted">#ff39916b</color>
+    <color name="discovery_title_spinner">#ff1d2c2c</color>
+    <color name="discovery_track">#ff00ffbf</color>
 </resources>
