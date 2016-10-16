@@ -55,16 +55,16 @@ public class IconView extends FrameLayout{
 
         Drawable bg = mContext.getResources().
                getDrawable(R.drawable.discovery_radar_icon_bg);
-        bg.setBounds(0,0, 200, 200);
+        bg.setBounds(0,0, 240, 240);
 
         Drawable lcok = mContext.getResources().
-                getDrawable(R.drawable.discovery_radar_lock_on);
-        lcok.setBounds(0,0, 200, 200);
+                getDrawable(R.drawable.discovery_radar_icon_lock_bg);
+        lcok.setBounds(0,0, 240, 240);
 
         //canvas.rotate(180);
 
         bg.draw(canvas);
-        //lcok.draw(canvas);
+        lcok.draw(canvas);
 
 
 
@@ -104,6 +104,10 @@ public class IconView extends FrameLayout{
 
     public ImageView getCircleAniImage(){
         return circleAniImage;
+    }
+
+    public void updateCircleAni(float rotation){
+        circleAniImage.setRotation(rotation);
     }
 
     public void requestLayout(){

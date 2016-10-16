@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.freeme.discovery.view.IconView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/iconLayout"
-    android:layout_width="120.0dip"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8.0dip"
+    android:layout_width="120dp"
+    android:layout_height="120dp"
     >
 
+    
     <ImageView
         android:id="@+id/animg"
         android:layout_width="match_parent"
@@ -19,9 +19,8 @@
         android:id="@+id/hot_app_icon"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:scaleType="fitXY"
-        android:layout_gravity="center"
-        android:src="@drawable/newspage_default_icon"/>
+        android:scaleType="centerInside"
+        android:layout_gravity="center" />
 
     <TextView
         android:id="@+id/hot_app_text"

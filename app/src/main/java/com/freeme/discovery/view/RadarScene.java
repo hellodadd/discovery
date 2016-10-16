@@ -27,7 +27,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.DecelerateInterpolator;
+import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -323,7 +326,7 @@ public class RadarScene extends FrameLayout {
     }
 
     private void updateAngleDefault(){
-        mRotateAngle += 0.02f;
+        mRotateAngle += 0.04f;
         updateAngle(mRotateAngle);
         mHandler.removeMessages(MSG_DEFAULT_ROTATE_SPEED);
         mHandler.sendEmptyMessage(MSG_DEFAULT_ROTATE_SPEED);
@@ -366,6 +369,11 @@ public class RadarScene extends FrameLayout {
                     //view.setScrollY(100);
                     //view.setTranslationY(t);
                     //invalidate();
+                    /*ImageView imageView = iconView.getCircleAniImage();
+                    imageView.setPivotX(l - iconView.getIconViewX());
+                    imageView.setPivotY(t - iconView.getIconViewY());
+                    iconView.updateCircleAni(mRotateAngle);
+                    //*/
                     invalidate();
                     mStartAngle += angleDelay;
                 }
@@ -475,7 +483,6 @@ public class RadarScene extends FrameLayout {
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
                 mAsyncImageCache.displayImage(
                         icon,
-                        R.drawable.newspage_default_icon,
                         new AsyncImageCache.NetworkImageGenerator(hotApp
                                 .getIconUrl(), hotApp.getIconUrl()), 0);
                 view.setTag("app");
@@ -486,13 +493,18 @@ public class RadarScene extends FrameLayout {
                 textView.setText(hotApp.getApkName());
 
                 ImageView imageView = (ImageView)view.findViewById(R.id.animg);
-                imageView.setPivotX(imageView.getWidth()/2);
-                imageView.setPivotY(imageView.getWidth()/2);
-                imageView.setTranslationY(imageView.getWidth() / 2.0F);
+                //imageView.setPivotX(imageView.getWidth()/2);
+                //imageView.setPivotY(imageView.getWidth()/2);
+                //imageView.setTranslationY(imageView.getWidth() / 2.0F);
+                //*
+                Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
+                LinearInterpolator lin = new LinearInterpolator();
+                roateani.setInterpolator(lin);
+                imageView.setAnimation(roateani);
+                //*/
 
-                ObjectAnimator ani = ObjectAnimator.ofFloat(imageView, "rotation", new float[] { -95.0F, 160.0F });
-                ani.setDuration(1000L);
-                ani.start();
+                view.setCircleAniImage(imageView);
+
 
                 addView(view,new FrameLayout.LayoutParams(-2, -2));
             }

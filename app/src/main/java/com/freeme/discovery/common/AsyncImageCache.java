@@ -417,6 +417,11 @@ public class AsyncImageCache {
         displayImage(imageView, loadingImage, width, height, imageGenerator, null,RoundCornerSize);
     }
 
+    public void displayImage(ImageView imageView,
+                                         ImageGenerator<?> imageGenerator,int RoundCornerSize) {
+        displayImage(imageView, (Drawable) null, imageGenerator, null,RoundCornerSize);
+    }
+
 
     /**
      * Get Image from cache
