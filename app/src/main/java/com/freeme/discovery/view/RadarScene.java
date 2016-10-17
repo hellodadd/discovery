@@ -234,24 +234,26 @@ public class RadarScene extends FrameLayout {
                         * Math.sin(Math.toRadians(mStartAngle)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                iconView.layout(l, t, l + 300, t + 300);
+                iconView.layout(l, t, l + 400, t + 400);
                 iconView.setIconViewXY(l, t);
                 mStartAngle += angleDelay;
             }
 
             if("star_dot".equals(view.getTag())){
-                ImageView stardot = (ImageView)view;
+                RadarScanDotView stardot = (RadarScanDotView) view;
                 mStartAngle %= 360;
                 int x, y;
-                float tmp = (int) (800 + Math.random()*400);
+                float tmp = stardot.getRadius();
                 x = (int) Math.round(tmp
                         * Math.cos(Math.toRadians(mStartAngle)));
                 y = (int) Math.round(tmp
                         * Math.sin(Math.toRadians(mStartAngle)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                stardot.layout(l, t, l + 26, t + 26);
-                mStartAngle += 30;
+                stardot.layout(l, t, l + 50, t + 50);
+                stardot.setOrginX(l);
+                stardot.setOrginY(t);
+                mStartAngle += (360/mStarDotNum);
             }
         }
 
@@ -402,7 +404,10 @@ public class RadarScene extends FrameLayout {
             // mHandler.sendEmptyMessage(2);
 
             mStartAngle = angle;
+
             float angleDelay = 360 / (20 - 1);
+
+            float dotViewAngle = angle;
 
             for(int i = 0; i < getChildCount(); i++){
 
@@ -427,18 +432,20 @@ public class RadarScene extends FrameLayout {
                 }
 
                 if("star_dot".equals(view.getTag())){
-                    ImageView stardot = (ImageView)view;
-                    mStartAngle %= 360;
+                    RadarScanDotView stardot = (RadarScanDotView) view;
+                    dotViewAngle %= 360;
                     int x, y;
-                    float tmp = (int) (800 + Math.random()*400);
+                    float tmp = stardot.getRadius();
                     x = (int) Math.round(tmp
-                            * Math.cos(Math.toRadians(mStartAngle)));
+                            * Math.cos(Math.toRadians(dotViewAngle)));
                     y = (int) Math.round(tmp
-                            * Math.sin(Math.toRadians(mStartAngle)));
+                            * Math.sin(Math.toRadians(dotViewAngle)));
                     int l = LcdWidth / 2 + x;
                     int t = LcdHeight -y;
-                    invalidate();
-                    mStartAngle += 30;
+                    stardot.setTranslationX(l - stardot.getOrginX());
+                    stardot.setTranslationY(t - stardot.getOrginY());
+                    //invalidate();
+                    dotViewAngle += (360/mStarDotNum);
                 }
 
             }
@@ -589,9 +596,16 @@ public class RadarScene extends FrameLayout {
 
     private void showStarDot(){
         for(int i = 0; i < mStarDotNum; i++){
-            ImageView view = new ImageView(mContext);
+            RadarScanDotView view = new RadarScanDotView(mContext);
             view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.start_dot));
             view.setTag("star_dot");
+            view.setRadius((int) (800 + Math.random()*400));
+
+            Animation alpha = AnimationUtils.loadAnimation(mContext,R.anim.dotviewani);
+            LinearInterpolator linearInterpolator = new LinearInterpolator();
+            alpha.setInterpolator(linearInterpolator);
+            view.setAnimation(alpha);
+
             addView(view,new FrameLayout.LayoutParams(-2, -2));
         }
     }

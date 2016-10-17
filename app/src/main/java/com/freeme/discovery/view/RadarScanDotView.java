@@ -1,0 +1,52 @@
+package com.freeme.discovery.view;
+
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.ImageView;
+
+/**
+ * Created by zwb on 2016/10/17.
+ */
+
+public class RadarScanDotView extends ImageView {
+
+    private int orginX;
+    private int orginY;
+    private int radius;
+
+    public RadarScanDotView(Context context){
+        this(context, null);
+    }
+
+    public RadarScanDotView(Context context, AttributeSet attrs){
+        this(context, attrs, 0);
+    }
+
+    public RadarScanDotView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public int getOrginX(){
+        return orginX;
+    }
+
+    public int getOrginY(){
+        return orginY;
+    }
+
+    public void setOrginX(int x){
+        orginX = x;
+    }
+
+    public void setOrginY(int y){
+        orginY = y;
+    }
+
+    public void setRadius(int r){
+        radius = r;
+    }
+
+    public int getRadius(){
+        return radius;
+    }
+}

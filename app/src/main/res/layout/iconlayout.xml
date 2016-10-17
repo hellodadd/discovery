@@ -13,8 +13,8 @@
 
     <com.freeme.discovery.view.IconView
         android:id="@+id/iconview"
-        android:layout_width="60dp"
-        android:layout_height="68dp">
+        android:layout_width="120dp"
+        android:layout_height="120dp">
 
         <ImageView
             android:id="@+id/animg"
@@ -38,17 +38,29 @@
                 android:layout_marginTop="14dp"
                 android:layout_marginLeft="12dp"/>
 
+        <com.freeme.discovery.view.IndicatorTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="63dp"
+            android:textSize="9sp"
+            android:layout_marginTop="4dp"
+            android:textColor="#00fdfa"
+            android:text="@string/app_discrible_disdance"/>
+
+        <TextView
+            android:id="@+id/hot_app_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#00fdfa"
+            android:lines="2"
+            android:layout_marginTop="64dp"
+            android:layout_marginLeft="4dp"
+            android:textStyle="italic"
+            />
+
     </com.freeme.discovery.view.IconView>
 
-    <TextView
-        android:id="@+id/hot_app_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#00fdfa"
-        android:lines="2"
-        android:maxLength="30"
-        android:layout_gravity="center_horizontal"
-        />
+
 
 </LinearLayout>
 
