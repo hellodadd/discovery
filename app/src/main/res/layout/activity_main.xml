@@ -14,6 +14,7 @@
 
 <com.freeme.discovery.view.RadarScene
     android:id="@+id/folder_radar"
+    android:background="@drawable/discovery_radar_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 </com.freeme.discovery.view.RadarScene>
@@ -27,30 +28,29 @@
         android:layout_height="wrap_content"
         android:background="@drawable/discovery_radar_sidebar_bg">
         <ImageView
-            android:id="@+id/discovery_radar_overflow_menu_icon"
+            android:id="@+id/discovery_share_button"
+            android:background="@drawable/discovery_share_button"
             android:layout_width="@dimen/discovery_right_navigation_width"
             android:layout_height="@dimen/discovery_right_navigation_width"
             android:layout_marginBottom="2.0dip" />
         <ImageView
-            android:id="@+id/discovery_radar_share_icon"
+            android:id="@+id/discovery_rotate_button"
+            android:background="@drawable/discovery_rotate_button"
             android:layout_width="@dimen/discovery_right_navigation_width"
             android:layout_height="@dimen/discovery_right_navigation_width"
             android:layout_marginBottom="2.0dip" />
         <ImageView
-            android:id="@+id/discovery_radar_pilot_mode"
-            android:visibility="gone"
+            android:id="@+id/discovery_refresh_button"
+            android:background="@drawable/discovery_refresh_button"
             android:layout_width="@dimen/discovery_right_navigation_width"
             android:layout_height="@dimen/discovery_right_navigation_width"
             android:layout_marginBottom="2.0dip" />
         <ImageView
-            android:id="@+id/discovery_radar_refresh"
+            android:id="@+id/discovery_type_button"
+            android:background="@drawable/discovery_type_button"
             android:layout_width="@dimen/discovery_right_navigation_width"
             android:layout_height="@dimen/discovery_right_navigation_width"
             android:layout_marginBottom="2.0dip" />
-        <ImageView
-            android:id="@+id/discovery_radar_favorite"
-            android:layout_width="@dimen/discovery_right_navigation_width"
-            android:layout_height="@dimen/discovery_right_navigation_width" />
     </LinearLayout>
 
     <FrameLayout
@@ -88,7 +88,8 @@
         android:background="@drawable/discovery_dock_menu_bg"
         android:layout_width="fill_parent"
         android:layout_height="80.0dip"
-        android:alpha="0.75" />
+        android:layout_marginBottom="30dp"
+        />
     <com.freeme.discovery.view.CircleMenu
         android:id="@+id/discovery_circlemenu"
         android:background="@android:color/transparent"

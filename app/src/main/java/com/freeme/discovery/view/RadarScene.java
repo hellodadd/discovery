@@ -22,6 +22,7 @@ import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +43,7 @@ import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class RadarScene extends FrameLayout {
@@ -75,6 +77,10 @@ public class RadarScene extends FrameLayout {
 
     float lastX;
     float lastY;
+
+    private TextView disdanceView[] = new TextView[4];
+
+    private int mStarDotNum = 5;
 
     private final ValueAnimator ac = new ValueAnimator();
 
@@ -133,7 +139,7 @@ public class RadarScene extends FrameLayout {
         mBottomCicyleView = new ImageView(context);
         mBottomCicyleView.setScaleType(ImageView.ScaleType.FIT_XY);
         mBottomCicyleView.setBackground(context.getDrawable(R.drawable.discovery_radar_center_meter));
-        int width = getDefaultWidth();
+        int width = getDefaultWidth() - 200;
         addView(mBottomCicyleView, 0, new FrameLayout.LayoutParams(width, width, 81));
         mBottomCicyleView.setPivotX(width / 2.0F);
         mBottomCicyleView.setPivotY(width / 2.0F);
@@ -148,6 +154,10 @@ public class RadarScene extends FrameLayout {
         mHandler.sendEmptyMessageDelayed(MSG_DEFAULT_ROTATE_SPEED, 500);
 
         mAsyncImageCache = AsyncImageCache.from(mContext);
+
+        showDisdanceOnBackground();
+
+        showStarDot();
     }
 
     protected void onDetachedFromWindow(){
@@ -167,10 +177,11 @@ public class RadarScene extends FrameLayout {
         this.I = (mViewCenterX + this.K);
 
         if (mRadarScanView != null){
-            Bitmap bg = getRadarBitmap();
-            mRadarScanView.setBackgroundDrawable(new BitmapDrawable(getResources(), bg));
-            int width = (int)(bg.getWidth() / 0.33F);
-            int height = (int)(bg.getHeight() / 0.33F);
+            //Bitmap bg = getRadarBitmap();
+            mRadarScanView.setBackgroundDrawable(/*new BitmapDrawable(getResources(), bg)*/
+            mContext.getResources().getDrawable(R.drawable.discovery_wave));
+            int width = (int)(mViewWidth / 0.33F);//(int)(bg.getWidth() / 0.33F);
+            int height = (int)(mViewHeight / 0.33F);//(int)(bg.getHeight() / 0.33F);
             FrameLayout.LayoutParams layoutParams =
                     (FrameLayout.LayoutParams)mRadarScanView.getLayoutParams();
             layoutParams.width = width;
@@ -197,16 +208,23 @@ public class RadarScene extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom){
         super.onLayout(changed, left, top, right, bottom);
 
-        Log.d("zwb", "zhangwuba ---------onLayout---------");
-
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
+
+        int startDisdance = CommonUtils.dip2px(mContext,50);
+        for(int i = 0; i < 4; i++){
+            disdanceView[i].layout(LcdWidth / 2 - CommonUtils.dip2px(mContext,20) , startDisdance,
+                    LcdWidth / 2 + CommonUtils.dip2px(mContext,100), startDisdance + CommonUtils.dip2px(mContext,50) );
+
+            startDisdance += CommonUtils.dip2px(mContext,100);
+        }
+
 
         for(int i = 0; i < childCount; i++){
 
             View view = getChildAt(i);
             if("app".equals(view.getTag())){
-                IconView iconView = (IconView)view;
+                ContentTempleteView iconView = (ContentTempleteView)view;
                 mStartAngle %= 360;
                 int x, y;
                 float tmp = iconView.getRadius();
@@ -216,9 +234,24 @@ public class RadarScene extends FrameLayout {
                         * Math.sin(Math.toRadians(mStartAngle)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                iconView.layout(l, t, l + 200, t + 200);
+                iconView.layout(l, t, l + 300, t + 300);
                 iconView.setIconViewXY(l, t);
                 mStartAngle += angleDelay;
+            }
+
+            if("star_dot".equals(view.getTag())){
+                ImageView stardot = (ImageView)view;
+                mStartAngle %= 360;
+                int x, y;
+                float tmp = (int) (800 + Math.random()*400);
+                x = (int) Math.round(tmp
+                        * Math.cos(Math.toRadians(mStartAngle)));
+                y = (int) Math.round(tmp
+                        * Math.sin(Math.toRadians(mStartAngle)));
+                int l = LcdWidth / 2 + x;
+                int t = LcdHeight -y;
+                stardot.layout(l, t, l + 26, t + 26);
+                mStartAngle += 30;
             }
         }
 
@@ -226,7 +259,7 @@ public class RadarScene extends FrameLayout {
 
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        drawGridBackground(mContext, canvas);
+        //drawGridBackground(mContext, canvas);
     }
 
     private void drawGridBackground(Context context, Canvas canvas){
@@ -250,8 +283,32 @@ public class RadarScene extends FrameLayout {
         canvas.drawRect(0.0f, 0.0f, (float) LcdWidth, (float) LcdHeight, paint);
     }
 
+
     private void drawIconView(Context context, Canvas canvas){
 
+    }
+
+    private void showDisdanceOnBackground(){
+        for(int i = 0; i < 4; i++){
+            disdanceView[i] = new TextView(mContext);
+        }
+        disdanceView[0].setText("- " + "3.5 KM");
+        disdanceView[0].setTextSize(12);
+        disdanceView[0].setTextColor(0x4400fdfa);
+        disdanceView[1].setText("- " + "2.5 KM");
+        disdanceView[1].setTextSize(12);
+        disdanceView[1].setTextColor(0x4400fdfa);
+        disdanceView[2].setText("- " + "1.5 KM");
+        disdanceView[2].setTextSize(12);
+        disdanceView[2].setTextColor(0x4400fdfa);
+        disdanceView[3].setText("- " + "0.5 KM");
+        disdanceView[3].setTextSize(12);
+        disdanceView[3].setTextColor(0x4400fdfa);
+        for(TextView view : disdanceView){
+            FrameLayout.LayoutParams p =  new FrameLayout.LayoutParams(-2,-2);
+            p.gravity = Gravity.CENTER_VERTICAL;
+            addView(view, p);
+        }
     }
 
     private Bitmap getRadarBitmap(){
@@ -353,7 +410,7 @@ public class RadarScene extends FrameLayout {
 
                 View view = getChildAt(i);
                 if("app".equals(view.getTag())){
-                    IconView iconView = (IconView) view;
+                    ContentTempleteView iconView = (ContentTempleteView) view;
                     mStartAngle %= 360;
                     int x, y;
                     float tmp = iconView.getRadius();
@@ -365,17 +422,23 @@ public class RadarScene extends FrameLayout {
                     int t = LcdHeight -y;
                     iconView.setTranslationX(l - iconView.getIconViewX());
                     iconView.setTranslationY(t - iconView.getIconViewY());
-                    //view.setScrollX(100);
-                    //view.setScrollY(100);
-                    //view.setTranslationY(t);
-                    //invalidate();
-                    /*ImageView imageView = iconView.getCircleAniImage();
-                    imageView.setPivotX(l - iconView.getIconViewX());
-                    imageView.setPivotY(t - iconView.getIconViewY());
-                    iconView.updateCircleAni(mRotateAngle);
-                    //*/
                     invalidate();
                     mStartAngle += angleDelay;
+                }
+
+                if("star_dot".equals(view.getTag())){
+                    ImageView stardot = (ImageView)view;
+                    mStartAngle %= 360;
+                    int x, y;
+                    float tmp = (int) (800 + Math.random()*400);
+                    x = (int) Math.round(tmp
+                            * Math.cos(Math.toRadians(mStartAngle)));
+                    y = (int) Math.round(tmp
+                            * Math.sin(Math.toRadians(mStartAngle)));
+                    int l = LcdWidth / 2 + x;
+                    int t = LcdHeight -y;
+                    invalidate();
+                    mStartAngle += 30;
                 }
 
             }
@@ -434,14 +497,14 @@ public class RadarScene extends FrameLayout {
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     private void addAppView(){
         for(int i = 0; i < 20; i++){
-            IconView view = new IconView(mContext);
+            ContentTempleteView view = new ContentTempleteView(mContext);
             view.setBackground(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg));
             view.setTag("app");
             addView(view,new FrameLayout.LayoutParams(-2, -2));
         }
 
         for(int i = 0; i < 20; i++){
-            IconView view = new IconView(mContext);
+            ContentTempleteView view = new ContentTempleteView(mContext);
             view.setBackground(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg));
             view.setTag("app2");
             addView(view,new FrameLayout.LayoutParams(-2, -2));
@@ -479,12 +542,12 @@ public class RadarScene extends FrameLayout {
     public void updateData(ArrayList<HotApp> hotAppsInfo){
         if(hotAppsInfo != null && hotAppsInfo.size() > 0){
             for(HotApp hotApp : hotAppsInfo){
-                IconView view = (IconView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
+                ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
                 mAsyncImageCache.displayImage(
-                        icon,
+                        icon,48,48,
                         new AsyncImageCache.NetworkImageGenerator(hotApp
-                                .getIconUrl(), hotApp.getIconUrl()), 0);
+                                .getIconUrl(), hotApp.getIconUrl()), 10);
                 view.setTag("app");
 
                 view.setRadius((int) (800 + Math.random()*400));
@@ -503,14 +566,33 @@ public class RadarScene extends FrameLayout {
                 imageView.setAnimation(roateani);
                 //*/
 
+                ImageView iconbg = (ImageView)view.findViewById(R.id.icon_bg);
+
                 view.setCircleAniImage(imageView);
 
+                int sex = new Random().nextInt(2);
 
-                addView(view,new FrameLayout.LayoutParams(-2, -2));
+                view.setIconViewSex(sex);
+
+                if(sex == 0){
+                    iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                }
+
+
+                addView(view, new FrameLayout.LayoutParams(-2, -2));
             }
         }
 
         //requestLayout();
 
+    }
+
+    private void showStarDot(){
+        for(int i = 0; i < mStarDotNum; i++){
+            ImageView view = new ImageView(mContext);
+            view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.start_dot));
+            view.setTag("star_dot");
+            addView(view,new FrameLayout.LayoutParams(-2, -2));
+        }
     }
 }

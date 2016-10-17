@@ -1,8 +1,6 @@
 package com.freeme.discovery.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
@@ -14,11 +12,10 @@ import android.widget.ImageView;
 import com.freeme.discovery.R;
 
 /**
- * Created by server on 16-9-28.
+ * Created by server on 16-10-17.
  */
 
-public class IconView extends FrameLayout{
-
+public class ContentTempleteView extends FrameLayout {
     private int x;
     private int y;
 
@@ -30,15 +27,17 @@ public class IconView extends FrameLayout{
 
     private ImageView circleAniImage;
 
-    public IconView(Context context) {
+    private int sex;
+
+    public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
 
-    public IconView(Context context, AttributeSet attrs){
+    public ContentTempleteView(Context context, AttributeSet attrs){
         this(context, attrs, 0);
     }
 
-    public IconView(Context context, AttributeSet attrs, int defStyleAttr){
+    public ContentTempleteView(Context context, AttributeSet attrs, int defStyleAttr){
         super(context, attrs, defStyleAttr);
 
         mContext = context;
@@ -50,33 +49,6 @@ public class IconView extends FrameLayout{
 
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
-
-        /*
-        Log.i("IconView", " ------- onDraw------");
-
-        Drawable bg = mContext.getResources().
-               getDrawable(R.drawable.discovery_radar_icon_bg);
-        bg.setBounds(10,0, 180, 180);
-
-        Drawable lcok = mContext.getResources().
-                getDrawable(R.drawable.discovery_radar_icon_lock_bg);
-        lcok.setBounds(10,0, 180, 180);
-
-        //canvas.rotate(180);
-
-        //bg.draw(canvas);
-        //lcok.draw(canvas);
-
-
-
-
-
-        //canvas.restoreToCount(1);
-
-       // Bitmap bitmap = BitmapFactory.decodeResource(
-                //mContext.getResources(), R.drawable.discovery_radar_icon_bg);
-        //canvas.drawBitmap(bitmap, 0, 0, mPaint);
-        */
     }
 
     public void setIconViewXY(int x, int y){
@@ -90,6 +62,14 @@ public class IconView extends FrameLayout{
 
     public int getIconViewY(){
         return y;
+    }
+
+    public void setIconViewSex(int s){
+        sex = s;
+    }
+
+    public int getIconViewSex(){
+        return sex;
     }
 
     public void setRadius(int r){
@@ -112,7 +92,7 @@ public class IconView extends FrameLayout{
         circleAniImage.setRotation(rotation);
     }
 
-    public void requestLayout(){
+   /* public void requestLayout(){
 
-    }
+    }*/
 }

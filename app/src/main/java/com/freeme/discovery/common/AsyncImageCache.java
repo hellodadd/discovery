@@ -417,6 +417,12 @@ public class AsyncImageCache {
         displayImage(imageView, loadingImage, width, height, imageGenerator, null,RoundCornerSize);
     }
 
+    public void displayImage(ImageView imageView, int width, int height,
+                             ImageGenerator<?> imageGenerator,int RoundCornerSize) {
+        //Drawable loadingImage = mContext.getResources().getDrawable(loadingImageId);
+        displayImage(imageView, (Drawable) null, width, height, imageGenerator, null,RoundCornerSize);
+    }
+
     public void displayImage(ImageView imageView,
                                          ImageGenerator<?> imageGenerator,int RoundCornerSize) {
         displayImage(imageView, (Drawable) null, imageGenerator, null,RoundCornerSize);
