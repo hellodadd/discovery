@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class CommonUtils {
 
-    public static int RADIUS[] = {250, 350, 400, 450, 500};
+    public static int RADIUS[] = {220, 350, 420, 480, 540};
 
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;

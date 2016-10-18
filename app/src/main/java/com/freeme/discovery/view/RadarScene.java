@@ -157,7 +157,7 @@ public class RadarScene extends FrameLayout {
         mBottomCicyleView = new ImageView(context);
         mBottomCicyleView.setScaleType(ImageView.ScaleType.FIT_XY);
         mBottomCicyleView.setBackground(context.getDrawable(R.drawable.discovery_radar_center_meter));
-        int width = getDefaultWidth() - 200;
+        int width = getDefaultWidth() - 350;
         addView(mBottomCicyleView, 0, new FrameLayout.LayoutParams(width, width, 81));
         mBottomCicyleView.setPivotX(width / 2.0F);
         mBottomCicyleView.setPivotY(width / 2.0F);
