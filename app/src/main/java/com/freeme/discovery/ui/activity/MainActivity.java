@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewStub;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.NetworkUtils;
 import com.freeme.discovery.view.CircleMenu;
 import com.freeme.discovery.view.RadarScene;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -47,6 +49,11 @@ public class MainActivity extends AppCompatActivity {
     private TextView mVideoSearch;
     private ImageView mBack;
 
+    private AVLoadingIndicatorView avLoadingIndicatorView;
+
+    private ViewStub mGuideViewStub;
+    private TextView mGuideStart;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +61,19 @@ public class MainActivity extends AppCompatActivity {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_main);
+
+        avLoadingIndicatorView = (AVLoadingIndicatorView)findViewById(R.id.discovery_loading_layout) ;
+        //avLoadingIndicatorView.show();
+
+        mGuideViewStub = (ViewStub)findViewById(R.id.discovery_guide);
+        mGuideViewStub.setVisibility(View.VISIBLE);
+        mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
+        mGuideStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mGuideViewStub.setVisibility(View.GONE);
+            }
+        });
 
         mHoloScene = (RadarScene) findViewById(R.id.folder_radar);
 
@@ -69,6 +89,12 @@ public class MainActivity extends AppCompatActivity {
         mCircleMenu.setMenuBottomMargin(dip2px(this, 20.0f));
         mCircleMenu.setOperationHeight(dip2px(this, 56.0f));
         mCircleMenu.setItemMargin(dip2px(this, 45.0f));
+        mCircleMenu.setMenuItemClickListener(new CircleMenu.MenuItemClickListener() {
+            @Override
+            public void menuItemClick(int postion) {
+                refreshData();
+            }
+        });
 
         mVideoSearch = new TextView(this);
         mVideoSearch.setText(getResources().getString(R.string.video_search));
@@ -101,10 +127,20 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        onFirstLoadData();
+
     }
 
     protected void onResume() {
         super.onResume();
+    }
+
+    private void onFirstLoadData(){
+        new GetOnlineHotAppsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
+    }
+
+    public void refreshData(){
+        avLoadingIndicatorView.show();
         new GetOnlineHotAppsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
     }
 
@@ -161,6 +197,7 @@ public class MainActivity extends AppCompatActivity {
                 mHoloScene.updateData(hotApps);
             }
             //updateHotApps(hotApps);
+            avLoadingIndicatorView.hide();
         }
     }
 

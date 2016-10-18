@@ -7,4 +7,27 @@
     <dimen name="common_corner_radius">2.0dip</dimen>
 
     <dimen name="discovery_right_navigation_width">40.0dip</dimen>
+
+    <dimen name="c_padding">16.0dip</dimen>
+    <dimen name="c_padding_big">24.0dip</dimen>
+    <dimen name="c_padding_extra_small">8.0dip</dimen>
+    <dimen name="c_padding_small">12.0dip</dimen>
+    <dimen name="c_sp12">12.0sp</dimen>
+    <dimen name="c_sp14">14.0sp</dimen>
+    <dimen name="c_sp16">16.0sp</dimen>
+    <dimen name="c_sp20">20.0sp</dimen>
+    <item type="dimen" name="c_text_size_button">@dimen/c_sp14</item>
+    <item type="dimen" name="c_text_size_group">@dimen/c_sp14</item>
+    <item type="dimen" name="c_text_size_list">@dimen/c_sp16</item>
+    <item type="dimen" name="c_text_size_menu">@dimen/c_sp14</item>
+    <item type="dimen" name="c_text_size_primary">@dimen/c_sp16</item>
+    <item type="dimen" name="c_text_size_secondary">@dimen/c_sp12</item>
+    <item type="dimen" name="c_text_size_tip">@dimen/c_sp14</item>
+    <item type="dimen" name="c_text_size_title">@dimen/c_sp20</item>
+    <dimen name="status_bar_height">25.0dip</dimen>
+    <dimen name="discovery_guide_root_view_margin">0.0dip</dimen>
+    <dimen name="discovery_guide_background_height">420.0dip</dimen>
+    <dimen name="discovery_guide_background_width">320.0dip</dimen>
+    <dimen name="discovery_guide_content_margin_h">24.0dip</dimen>
+    <dimen name="discovery_guide_content_margin_v">16.0dip</dimen>
 </resources>

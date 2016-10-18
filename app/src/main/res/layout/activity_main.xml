@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:id="@+id/discovery_root_view"
     android:fitsSystemWindows="false"
@@ -72,7 +73,7 @@
                 android:src="@drawable/btn_back_normal"/>
             <TextView
                 android:textSize="18.0sp"
-                android:textColor="@color/discovery_title"
+                android:textColor="@color/discovery_theme_color"
                 android:gravity="center|left"
                 android:id="@+id/discovery_radar_title"
                 android:layout_width="wrap_content"
@@ -82,6 +83,16 @@
                 android:textAllCaps="true" />
         </LinearLayout>
     </FrameLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        android:layout_gravity="center"
+        android:id="@+id/discovery_loading_layout"
+        android:layout_width="64.0dip"
+        android:layout_height="64.0dip"
+        style="@style/AVLoadingIndicatorView.Large"
+        app:indicatorName="BallClipRotateMultipleIndicator"
+        app:indicatorColor="@color/discovery_theme_color"
+        />
 
     <ImageView android:layout_gravity="bottom"
         android:id="@+id/discovery_menu_bg"
@@ -95,4 +106,10 @@
         android:background="@android:color/transparent"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
+
+    <ViewStub android:id="@+id/discovery_guide"
+        android:layout="@layout/discovery_guide_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
 </FrameLayout>

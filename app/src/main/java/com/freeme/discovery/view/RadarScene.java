@@ -43,6 +43,7 @@ import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -84,6 +85,21 @@ public class RadarScene extends FrameLayout {
 
     private final ValueAnimator ac = new ValueAnimator();
 
+    private final static int RADIAN_0 = 5;// 0 cicir show 5
+    private final static int RADIAN_1 = 8;//
+    private final static int RADIAN_2 = 13;//
+    private final static int RADIAN_3 = 23;//
+    private final static int RADIAN_4 = 30;//
+
+    private int radian0Count = 0;
+    private int radian1Count = 0;
+    private int radian2Count = 0;
+    private int radian3Count = 0;
+    private int radian4Count = 0;
+
+    private List mapList = new ArrayList();
+    private List mapListUsed = new ArrayList();
+
     final static int MSG_RADAR_SCAN_ANI = 1;
     final static int MSG_DEFAULT_ROTATE_SPEED = 2;
 
@@ -123,6 +139,8 @@ public class RadarScene extends FrameLayout {
         super(context, attrs, defStyleAttr);
 
         mContext = context;
+
+        initMapList();
 
         LcdWidth = context.getResources().getDisplayMetrics().widthPixels;
         LcdHeight = context.getResources().getDisplayMetrics().heightPixels;
@@ -225,18 +243,18 @@ public class RadarScene extends FrameLayout {
             View view = getChildAt(i);
             if("app".equals(view.getTag())){
                 ContentTempleteView iconView = (ContentTempleteView)view;
-                mStartAngle %= 360;
+                double radian = iconView.getRadian();
+                radian %= 360;
                 int x, y;
                 float tmp = iconView.getRadius();
                 x = (int) Math.round(tmp
-                        * Math.cos(Math.toRadians(mStartAngle)));
+                        * Math.cos(Math.toRadians(iconView.getRadian())));
                 y = (int) Math.round(tmp
-                        * Math.sin(Math.toRadians(mStartAngle)));
+                        * Math.sin(Math.toRadians(iconView.getRadian())));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
                 iconView.layout(l, t, l + 400, t + 400);
                 iconView.setIconViewXY(l, t);
-                mStartAngle += angleDelay;
             }
 
             if("star_dot".equals(view.getTag())){
@@ -411,18 +429,18 @@ public class RadarScene extends FrameLayout {
 
             for(int i = 0; i < getChildCount(); i++){
 
-
-
                 View view = getChildAt(i);
                 if("app".equals(view.getTag())){
                     ContentTempleteView iconView = (ContentTempleteView) view;
                     mStartAngle %= 360;
+                    double radian = iconView.getRadian() + angle;
+                    radian %= 360;
                     int x, y;
                     float tmp = iconView.getRadius();
                     x = (int) Math.round(tmp
-                            * Math.cos(Math.toRadians(mStartAngle)));
+                            * Math.cos(Math.toRadians(radian)));
                     y = (int) Math.round(tmp
-                            * Math.sin(Math.toRadians(mStartAngle)));
+                            * Math.sin(Math.toRadians(radian)));
                     int l = LcdWidth / 2 + x;
                     int t = LcdHeight -y;
                     iconView.setTranslationX(l - iconView.getIconViewX());
@@ -542,12 +560,41 @@ public class RadarScene extends FrameLayout {
         }
     }
 
+    private void initMapList(){
+        int radianStep = 0;
+        for(int i = 0; i < RADIAN_0; i++) {
+            mapList.add(radianStep);
+            radianStep += 45;
+        }
+        radianStep = 0;
+        for(int i = 0; i < RADIAN_1; i++) {
+            mapList.add(radianStep);
+            radianStep += 40;
+        }
+        radianStep = 0;
+        for(int i = 0; i < RADIAN_2; i++) {
+            mapList.add(radianStep);
+            radianStep += 360/RADIAN_2;
+        }
+        radianStep = 0;
+        for(int i = 0; i < RADIAN_3; i++) {
+            mapList.add(radianStep);
+            radianStep += 360/RADIAN_3;
+        }
+        radianStep = 0;
+        for(int i = 0; i < RADIAN_4; i++) {
+            mapList.add(radianStep);
+            radianStep += 360/RADIAN_4;
+        }
+    }
+
     public void setAdapter(MyAdapter adapter){
         mMyAdapter = adapter;
     }
 
     public void updateData(ArrayList<HotApp> hotAppsInfo){
         if(hotAppsInfo != null && hotAppsInfo.size() > 0){
+            Log.i("zccc", " update ----- hotAppsInfo.size = " + hotAppsInfo.size());
             for(HotApp hotApp : hotAppsInfo){
                 ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
@@ -557,7 +604,35 @@ public class RadarScene extends FrameLayout {
                                 .getIconUrl(), hotApp.getIconUrl()), 10);
                 view.setTag("app");
 
-                view.setRadius((int) (800 + Math.random()*400));
+                int radom = (int) (Math.random()* mapList.size());
+
+                int radian = (int) mapList.get(radom);
+                while (radian == 1000){
+                    radom = (int) (Math.random()* mapList.size());
+                    radian = (int) mapList.get(radom);
+                }
+
+                mapList.set(radom, 1000);
+
+                Log.i("zccc", " ------radian ---------- " + radian);
+                view.setRadian(radian);
+
+                int radius = 0;
+
+                if(radom < RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
+                }else if(radom > RADIAN_0 - 1 && radom < RADIAN_1){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
+                }else if(radom > RADIAN_1 - 1 && radom < RADIAN_2){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
+                }else if(radom > RADIAN_2 - 1 && radom < RADIAN_3){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
+                }else if(radom > RADIAN_3 - 1 && radom < RADIAN_4){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
+                }
+
+
+                view.setRadius(radius);
 
                 TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
                 textView.setText(hotApp.getApkName());
@@ -584,7 +659,6 @@ public class RadarScene extends FrameLayout {
                 if(sex == 0){
                     iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
                 }
-
 
                 addView(view, new FrameLayout.LayoutParams(-2, -2));
             }

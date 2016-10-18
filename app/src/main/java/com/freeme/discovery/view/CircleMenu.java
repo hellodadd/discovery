@@ -189,11 +189,12 @@ public class CircleMenu extends RelativeLayout {
             }
 
             public final void onAnimationEnd(Animator paramAnimator) {
-                if(mIsSwitchView){
+                if(mView == mChildView[0]){
                     setViewDegrees(0);
                 }else{
                     setViewDegrees(1);
                 }
+                mItemClickListener.menuItemClick(0);
             }
 
             public final void onAnimationStart(Animator paramAnimator) {
@@ -204,7 +205,7 @@ public class CircleMenu extends RelativeLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float value = ((Float)animation.getAnimatedValue()).floatValue();
-                setViewDegrees(1 + (double) value * mWidth);
+                //setViewDegrees(1 + (double) value * mWidth);
             }
         });
         animator.start();
@@ -212,16 +213,27 @@ public class CircleMenu extends RelativeLayout {
     }
 
     private void switchView(int dis){
-       for(int i = 0; i < mChildCount; i++){
+        //Log.i("zccc", "zccc -------- dis = " + dis);
+       /*for(int i = 0; i < mChildCount; i++){
            View view = getChildAt(i);
            float x = view.getX();
            int w = view.getWidth();
+           Log.i("zccc", "zccc -------- x = " + x + " ---- w " + w);
            if((((dis >= 0) || (x >= 0.0F))) && (((x + w <= mWidth) || (dis <= 0)))){
                mIsSwitchView = false;
            }
-       }
+       }*/
+        float x0 = getChildAt(0).getX();
+        float x1 = getChildAt(1).getX();
 
-        mIsSwitchView = true;
+        //Log.i("zccc", "zccc -------- x = " + x0 + " ---- x1 " + x1);
+        if(Math.abs(x0 - mWidth/2) < Math.abs(x1 - mWidth/2)){
+            mView = mChildView[0];
+        }else{
+            mView = mChildView[1];
+        }
+
+       // mIsSwitchView = true;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -292,6 +304,7 @@ public class CircleMenu extends RelativeLayout {
         }
 
         setViewDegrees(1);
+
     }
 
     public final void setViewDegrees(int degrees){
@@ -303,7 +316,6 @@ public class CircleMenu extends RelativeLayout {
             mView = mChildView[1];
             mRadian = Math.abs(mPosition[1]);
             setViewDegrees(mRadian);
-
         }
     }
 

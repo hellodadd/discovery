@@ -29,6 +29,8 @@ public class ContentTempleteView extends FrameLayout {
 
     private int sex;
 
+    private float radian;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -78,6 +80,14 @@ public class ContentTempleteView extends FrameLayout {
 
     public int getRadius(){
         return radius;
+    }
+
+    public float getRadian(){
+        return radian;
+    }
+
+    public void setRadian(float rad){
+        radian = rad;
     }
 
     public void setCircleAniImage(ImageView view){

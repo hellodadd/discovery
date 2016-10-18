@@ -20,4 +20,6 @@
     <color name="discovery_title_delighted">#ff39916b</color>
     <color name="discovery_title_spinner">#ff1d2c2c</color>
     <color name="discovery_track">#ff00ffbf</color>
+
+    <color name="discovery_theme_color">#ff00fdfa</color>
 </resources>
