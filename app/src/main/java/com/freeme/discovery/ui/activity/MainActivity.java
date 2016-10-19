@@ -29,6 +29,7 @@ import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.NetworkUtils;
 import com.freeme.discovery.view.CircleMenu;
+import com.freeme.discovery.view.GuideView;
 import com.freeme.discovery.view.RadarScene;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -101,10 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean firststart = sp.getBoolean(KEY_FIRST, true);
 
         mGuideViewStub = (ViewStub)findViewById(R.id.discovery_guide);
-        mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
-        if(mGuideStart != null) {
-            mGuideStart.setOnClickListener(this);
-        }
+
         if(firststart) {
             mGuideViewStub.setVisibility(View.VISIBLE);
         }else{
@@ -233,6 +231,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
 
     public class GetOnlineHotAppsData extends
             AsyncTask<Boolean, Void, DownloadInfo>{

@@ -2,9 +2,11 @@ package com.freeme.discovery.view;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.freeme.discovery.R;
 
@@ -19,6 +21,7 @@ public class GuideView extends FrameLayout {
     private ImageView mGuideFemale;
     private boolean mGuideMalePress = false;
     private boolean mGuideFemalePress = false;
+    private TextView mGuideStart;
 
 
 
@@ -72,5 +75,14 @@ public class GuideView extends FrameLayout {
                 }
             }
         });
+
+        mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
+        mGuideStart.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                  
+            }
+        });
     }
+
 }
