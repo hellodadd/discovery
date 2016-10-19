@@ -1,6 +1,8 @@
 package com.freeme.discovery.ui.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -35,10 +37,19 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.Executor;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener{
     private final static String TAG = "MainActivity";
+
+    private final static String KEY_FIRST = "firststart";
 
     private RadarScene mHoloScene;
 
@@ -54,6 +65,27 @@ public class MainActivity extends AppCompatActivity {
     private ViewStub mGuideViewStub;
     private TextView mGuideStart;
 
+    private ImageView mShareButton;
+    private ImageView mRefreshButton;
+    private ImageView mScanStopButton;
+    private ImageView mFavriteButton;
+    private boolean mBooleanRadarScan;
+
+    private static final int CORE_POOL_SIZE = 5;
+    private static final int MAXIMUM_POOL_SIZE = 128;
+    private static final int KEEP_ALIVE = 1;
+
+    private static final ThreadFactory sThreadFactory = new ThreadFactory() {
+        private final AtomicInteger mCount = new AtomicInteger(1);
+        public Thread newThread(Runnable r) {
+            return new Thread(r, "AsyncTask #" + mCount.getAndIncrement());
+        }
+    };
+    private static final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
+    public static final Executor fixedThreadPool = new ThreadPoolExecutor(
+            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
+            TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory,new ThreadPoolExecutor.DiscardOldestPolicy());
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,15 +97,28 @@ public class MainActivity extends AppCompatActivity {
         avLoadingIndicatorView = (AVLoadingIndicatorView)findViewById(R.id.discovery_loading_layout) ;
         //avLoadingIndicatorView.show();
 
+        SharedPreferences sp = this.getSharedPreferences("discovery", MODE_PRIVATE);
+        boolean firststart = sp.getBoolean(KEY_FIRST, true);
+
         mGuideViewStub = (ViewStub)findViewById(R.id.discovery_guide);
-        mGuideViewStub.setVisibility(View.VISIBLE);
         mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
-        mGuideStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mGuideViewStub.setVisibility(View.GONE);
-            }
-        });
+        if(mGuideStart != null) {
+            mGuideStart.setOnClickListener(this);
+        }
+        if(firststart) {
+            mGuideViewStub.setVisibility(View.VISIBLE);
+        }else{
+            mGuideViewStub.setVisibility(View.GONE);
+        }
+
+        mShareButton = (ImageView)findViewById(R.id.discovery_share_button);
+        mShareButton.setOnClickListener(this);
+        mRefreshButton = (ImageView)findViewById(R.id.discovery_refresh_button);
+        mRefreshButton.setOnClickListener(this);
+        mScanStopButton = (ImageView)findViewById(R.id.discovery_rotate_button);
+        mScanStopButton.setOnClickListener(this);
+        mFavriteButton = (ImageView)findViewById(R.id.discovery_type_button);
+        mFavriteButton.setOnClickListener(this);
 
         mHoloScene = (RadarScene) findViewById(R.id.folder_radar);
 
@@ -120,13 +165,6 @@ public class MainActivity extends AppCompatActivity {
 
         mHoloScene.setAdapter(mMyAdapter);
 
-        try {
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
-            Log.i(TAG, "  imsi =   " + tm.getSubscriberId());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         onFirstLoadData();
 
     }
@@ -136,17 +174,64 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onFirstLoadData(){
-        new GetOnlineHotAppsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
+        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
     }
 
     public void refreshData(){
         avLoadingIndicatorView.show();
-        new GetOnlineHotAppsData().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, false);
+        mHoloScene.clearData();
+        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
     }
 
     public  int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
+    }
+
+    private void shareApp() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.putExtra(Intent.EXTRA_TEXT, getString(R.string.software_share_text));
+        intent.setType("text/plain");
+        startActivity(Intent.createChooser(intent, getString(R.string.software_share_titile)));
+    }
+
+    private void stopRadarSacn(){
+        if(!mBooleanRadarScan){
+            if(mHoloScene != null){
+                mHoloScene.stopRadarScan();
+            }
+        }else{
+            if(mHoloScene != null){
+                mHoloScene.startRadarScan();
+            }
+        }
+        mBooleanRadarScan = !mBooleanRadarScan;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.discovery_share_button:
+                shareApp();
+                break;
+            case R.id.discovery_refresh_button:
+                refreshData();
+                break;
+            case R.id.discovery_rotate_button:
+                stopRadarSacn();
+                break;
+            case R.id.discovery_type_button:
+                break;
+            case R.id.discovery_rule_start:
+                if(mGuideViewStub != null) {
+                    mGuideViewStub.setVisibility(View.GONE);
+                }
+                SharedPreferences sp = MainActivity.this.getSharedPreferences("discovery", MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.putBoolean(KEY_FIRST, false);
+                editor.commit();
+                break;
+        }
     }
 
     public class GetOnlineHotAppsData extends
@@ -194,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             if(mHoloScene != null){
-                mHoloScene.updateData(hotApps);
+               mHoloScene.updateData(hotApps);
             }
             //updateHotApps(hotApps);
             avLoadingIndicatorView.hide();

@@ -2,7 +2,9 @@
     <string name="app_name">Discovery</string>
     <string name="app_search">Apps</string>
     <string name="video_search">Videos</string>
-    <string name="app_discrible_disdance">一个女生在用 </string>
+    <string name="app_status_discrible_male">A boy is using</string>
+    <string name="app_status_discrible_female">A girl is using</string>
+    <string name="discovery_radar_icon_corner_subscription">Followed category</string>
     <string name="discovery_guide_title">Wellcome to Discovery</string>
     <string name="discovery_guide_start">Start</string>
     <string name="discovery_guide_secret_gender_text">Secret</string>
@@ -14,4 +16,7 @@
     <string name="distance_km">km</string>
     <string name="distance_mi">mi</string>
     <string name="discovery_guide_meet_friends">Meet friends nearby</string>
+
+    <string name="software_share_text">Freeme Launcher:beautiful launcher with fast speed and good use experience, just try it.https://play.google.com/store/apps/details?id=com.freeme.freemelite.odm</string>
+    <string name="software_share_titile">share</string>
 </resources>

@@ -27,9 +27,13 @@ public class ContentTempleteView extends FrameLayout {
 
     private ImageView circleAniImage;
 
+    private IndicatorTextView indicatorTextView;
+
     private int sex;
 
     private float radian;
+
+    private boolean ishowattention;
 
     public ContentTempleteView(Context context) {
         this(context, null, 0);
@@ -100,6 +104,22 @@ public class ContentTempleteView extends FrameLayout {
 
     public void updateCircleAni(float rotation){
         circleAniImage.setRotation(rotation);
+    }
+
+    public void setIndicatorTextView(IndicatorTextView view){
+        indicatorTextView = view;
+    }
+
+    public IndicatorTextView getIndicatorTextView(){
+        return indicatorTextView;
+    }
+
+    public void setIshowattention(boolean show){
+        ishowattention = show;
+    }
+
+    public boolean getIshowattention(){
+        return  ishowattention;
     }
 
    /* public void requestLayout(){

@@ -39,13 +39,14 @@
                 android:layout_marginLeft="12dp"/>
 
         <com.freeme.discovery.view.IndicatorTextView
+            android:id="@+id/status_textview"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="63dp"
             android:textSize="9sp"
             android:layout_marginTop="4dp"
             android:textColor="#00fdfa"
-            android:text="@string/app_discrible_disdance"/>
+            />
 
         <TextView
             android:id="@+id/hot_app_text"

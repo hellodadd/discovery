@@ -85,11 +85,13 @@ public class RadarScene extends FrameLayout {
 
     private final ValueAnimator ac = new ValueAnimator();
 
+    private ContentTempleteView mContentTempleteView[] = new ContentTempleteView[60];
+
     private final static int RADIAN_0 = 5;// 0 cicir show 5
     private final static int RADIAN_1 = 8;//
     private final static int RADIAN_2 = 13;//
-    private final static int RADIAN_3 = 23;//
-    private final static int RADIAN_4 = 30;//
+    private final static int RADIAN_3 = 16;//
+    private final static int RADIAN_4 = 18;//
 
     private int radian0Count = 0;
     private int radian1Count = 0;
@@ -102,6 +104,7 @@ public class RadarScene extends FrameLayout {
 
     final static int MSG_RADAR_SCAN_ANI = 1;
     final static int MSG_DEFAULT_ROTATE_SPEED = 2;
+    final static int MSG_UPDATE_STATUS = 3;
 
     private MyAdapter mMyAdapter;
 
@@ -119,6 +122,10 @@ public class RadarScene extends FrameLayout {
                     break;
                 case MSG_DEFAULT_ROTATE_SPEED:
                     updateAngleDefault();
+                    break;
+                case MSG_UPDATE_STATUS:
+                    Log.i("zccc", "    MSG_UPDATE_STATUS   ");
+                    updateContentViewSataus();
                     break;
 
             }
@@ -157,7 +164,7 @@ public class RadarScene extends FrameLayout {
         mBottomCicyleView = new ImageView(context);
         mBottomCicyleView.setScaleType(ImageView.ScaleType.FIT_XY);
         mBottomCicyleView.setBackground(context.getDrawable(R.drawable.discovery_radar_center_meter));
-        int width = getDefaultWidth() - 350;
+        int width = getDefaultWidth()/2 + 20;
         addView(mBottomCicyleView, 0, new FrameLayout.LayoutParams(width, width, 81));
         mBottomCicyleView.setPivotX(width / 2.0F);
         mBottomCicyleView.setPivotY(width / 2.0F);
@@ -248,9 +255,9 @@ public class RadarScene extends FrameLayout {
                 int x, y;
                 float tmp = iconView.getRadius();
                 x = (int) Math.round(tmp
-                        * Math.cos(Math.toRadians(iconView.getRadian())));
+                        * Math.cos(Math.toRadians(radian)));
                 y = (int) Math.round(tmp
-                        * Math.sin(Math.toRadians(iconView.getRadian())));
+                        * Math.sin(Math.toRadians(radian)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
                 iconView.layout(l, t, l + 400, t + 400);
@@ -400,6 +407,8 @@ public class RadarScene extends FrameLayout {
         mRadarScanAni.start();
         mHandler.removeMessages(MSG_RADAR_SCAN_ANI);
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
+
+
     }
 
     private void updateAngleDefault(){
@@ -407,6 +416,7 @@ public class RadarScene extends FrameLayout {
         updateAngle(mRotateAngle);
         mHandler.removeMessages(MSG_DEFAULT_ROTATE_SPEED);
         mHandler.sendEmptyMessage(MSG_DEFAULT_ROTATE_SPEED);
+        mHandler.removeMessages(MSG_UPDATE_STATUS);
     }
 
     private void updateAngle(float angle){
@@ -551,7 +561,6 @@ public class RadarScene extends FrameLayout {
         public AutoRotateRunnable(float velocity){
             this.angelPerSecond = velocity;
         }
-
         public void run() {
             mStartAngle += 0.1;//(angelPerSecond / 30);
             post(this);
@@ -564,37 +573,40 @@ public class RadarScene extends FrameLayout {
         int radianStep = 0;
         for(int i = 0; i < RADIAN_0; i++) {
             mapList.add(radianStep);
+            radianStep += 70;
+        }
+        radianStep = 0;
+        for(int i = RADIAN_0; i < RADIAN_1 + RADIAN_0; i++) {
+            mapList.add(radianStep);
             radianStep += 45;
         }
         radianStep = 0;
-        for(int i = 0; i < RADIAN_1; i++) {
+        for(int i = RADIAN_1 + RADIAN_0; i < RADIAN_2 + RADIAN_1 + RADIAN_0; i++) {
             mapList.add(radianStep);
-            radianStep += 40;
+            radianStep += 27;
         }
         radianStep = 0;
-        for(int i = 0; i < RADIAN_2; i++) {
-            mapList.add(radianStep);
-            radianStep += 360/RADIAN_2;
-        }
-        radianStep = 0;
-        for(int i = 0; i < RADIAN_3; i++) {
+        for(int i = RADIAN_2 + RADIAN_1 + RADIAN_0; i < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0; i++) {
             mapList.add(radianStep);
             radianStep += 360/RADIAN_3;
         }
         radianStep = 0;
-        for(int i = 0; i < RADIAN_4; i++) {
+        for(int i = RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0; i < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0; i++) {
             mapList.add(radianStep);
             radianStep += 360/RADIAN_4;
         }
+
     }
 
     public void setAdapter(MyAdapter adapter){
         mMyAdapter = adapter;
     }
 
+    private  int count = 0;
     public void updateData(ArrayList<HotApp> hotAppsInfo){
         if(hotAppsInfo != null && hotAppsInfo.size() > 0){
             Log.i("zccc", " update ----- hotAppsInfo.size = " + hotAppsInfo.size());
+           // Log.i("zccc", " update ----- count = " + count);
             for(HotApp hotApp : hotAppsInfo){
                 ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
@@ -604,48 +616,63 @@ public class RadarScene extends FrameLayout {
                                 .getIconUrl(), hotApp.getIconUrl()), 10);
                 view.setTag("app");
 
-                int radom = (int) (Math.random()* mapList.size());
+                //*/
+                int random = (int) (Math.random()* mapList.size());
 
-                int radian = (int) mapList.get(radom);
+                int radian = (int) mapList.get(random);
+                Log.i("zccc", " update ----- radian = " + radian);
                 while (radian == 1000){
-                    radom = (int) (Math.random()* mapList.size());
-                    radian = (int) mapList.get(radom);
+                    random = (int) (Math.random()* mapList.size());
+                    radian = (int) mapList.get(random);
                 }
 
-                mapList.set(radom, 1000);
+                mapList.set(random, 1000);
 
-                Log.i("zccc", " ------radian ---------- " + radian);
                 view.setRadian(radian);
 
                 int radius = 0;
 
-                if(radom < RADIAN_0){
+                if(random < RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
-                }else if(radom > RADIAN_0 - 1 && radom < RADIAN_1){
+                }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
-                }else if(radom > RADIAN_1 - 1 && radom < RADIAN_2){
+                }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
-                }else if(radom > RADIAN_2 - 1 && radom < RADIAN_3){
+                }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
-                }else if(radom > RADIAN_3 - 1 && radom < RADIAN_4){
+                }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
                 }
 
 
                 view.setRadius(radius);
+                //*/
+
+                //test
+                /*/
+                int radian = 0;
+                if(count < 16){
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]));
+                    radian = (int) mapList.get(count + 26);
+                    //Log.i("zccc", " update ----- radian = " + radian);
+                }else if(count > 15 && count < 34){
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]));
+                    radian = (int) mapList.get(count + 26);
+                    Log.i("zccc", " update ----- radian = " + radian);
+                }else {
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]));
+                    radian = (int) mapList.get(count);
+                }
+
+                view.setRadian(radian);
+                count += 1;
+                //*/
 
                 TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
                 textView.setText(hotApp.getApkName());
 
                 ImageView imageView = (ImageView)view.findViewById(R.id.animg);
-                //imageView.setPivotX(imageView.getWidth()/2);
-                //imageView.setPivotY(imageView.getWidth()/2);
-                //imageView.setTranslationY(imageView.getWidth() / 2.0F);
-                //*
-                Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
-                LinearInterpolator lin = new LinearInterpolator();
-                roateani.setInterpolator(lin);
-                imageView.setAnimation(roateani);
+                imageView.setVisibility(GONE);
                 //*/
 
                 ImageView iconbg = (ImageView)view.findViewById(R.id.icon_bg);
@@ -660,12 +687,36 @@ public class RadarScene extends FrameLayout {
                     iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
                 }
 
+                IndicatorTextView statusTextView = (IndicatorTextView)view.findViewById(R.id.status_textview);
+                statusTextView.setVisibility(GONE);
+                view.setIndicatorTextView(statusTextView);
+
+                mContentTempleteView[count] = view;
+                count += 1;
+
                 addView(view, new FrameLayout.LayoutParams(-2, -2));
+
+                updateContentViewSataus();
             }
         }
 
         //requestLayout();
 
+    }
+
+    public void clearData(){
+        for(int i = 0; i < mContentTempleteView.length; i++){
+            removeView(mContentTempleteView[i]);
+        }
+        count = 0;
+    }
+
+    public void stopRadarScan(){
+        mHandler.removeMessages(MSG_DEFAULT_ROTATE_SPEED);
+    }
+
+    public void startRadarScan(){
+        mHandler.sendEmptyMessage(MSG_DEFAULT_ROTATE_SPEED);
     }
 
     private void showStarDot(){
@@ -681,6 +732,59 @@ public class RadarScene extends FrameLayout {
             view.setAnimation(alpha);
 
             addView(view,new FrameLayout.LayoutParams(-2, -2));
+        }
+    }
+
+    private void updateContentViewSataus(){
+        final int random = (int) (Math.random()* mContentTempleteView.length);
+        int randomstatus = (int) (10 + Math.random()* 50);
+        Log.i("zccc", "   onAnimatioupdateContentViewSatausnRepeat --- ");
+        if(mContentTempleteView[random] != null){
+            if(mContentTempleteView[random].getIshowattention()){
+                return;
+            }
+            final ImageView imageView = mContentTempleteView[random].getCircleAniImage();
+            final IndicatorTextView statusView = mContentTempleteView[random].getIndicatorTextView();
+            final int sex = mContentTempleteView[random].getIconViewSex();
+            if(randomstatus > 25){
+                statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
+            }else{
+                statusView.setText(sex==0?mContext.getResources().getString(R.string.app_status_discrible_female) :
+                        mContext.getResources().getString(R.string.app_status_discrible_male));
+            }
+            statusView.setSingleLine();
+            statusView.setVisibility(VISIBLE);
+            if(imageView != null && statusView != null){
+                Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
+                LinearInterpolator lin = new LinearInterpolator();
+                roateani.setInterpolator(lin);
+                roateani.setRepeatMode(Animation.RESTART);
+                roateani.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        mHandler.sendEmptyMessage(MSG_UPDATE_STATUS);
+                        imageView.setVisibility(GONE);
+                        statusView.setVisibility(GONE);
+                        mContentTempleteView[random].setIshowattention(false);
+                        Log.i("zccc", "   onAnimationRepeat --- ");
+                        //mHandler.removeMessages(MSG_UPDATE_STATUS);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+                imageView.setAnimation(roateani);
+                imageView.setVisibility(VISIBLE);
+                mContentTempleteView[random].setIshowattention(true);
+
+            }
         }
     }
 }
