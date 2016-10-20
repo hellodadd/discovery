@@ -14,8 +14,9 @@
     <string name="discovery_sample_app_description">The App someone is using</string>
     <string name="distance">Distance</string>
     <string name="distance_km">km</string>
-    <string name="distance_mi">mi</string>
+    <string name="distance_mi">%d m</string>
     <string name="discovery_guide_meet_friends">Meet friends nearby</string>
+    <string name="has_userd">%d Users</string>
 
     <string name="software_share_text">Freeme Launcher:beautiful launcher with fast speed and good use experience, just try it.https://play.google.com/store/apps/details?id=com.freeme.freemelite.odm</string>
     <string name="software_share_titile">share</string>

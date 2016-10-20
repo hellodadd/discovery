@@ -42,6 +42,7 @@ import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -233,6 +234,8 @@ public class RadarScene extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom){
         super.onLayout(changed, left, top, right, bottom);
 
+        //Log.i("ded", " -------------- onLayout ----------");
+
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
 
@@ -319,16 +322,16 @@ public class RadarScene extends FrameLayout {
         for(int i = 0; i < 4; i++){
             disdanceView[i] = new TextView(mContext);
         }
-        disdanceView[0].setText("- " + "3.5 KM");
+        disdanceView[0].setText("- " + "6.57 KM");
         disdanceView[0].setTextSize(12);
         disdanceView[0].setTextColor(0x4400fdfa);
-        disdanceView[1].setText("- " + "2.5 KM");
+        disdanceView[1].setText("- " + "4.53 KM");
         disdanceView[1].setTextSize(12);
         disdanceView[1].setTextColor(0x4400fdfa);
-        disdanceView[2].setText("- " + "1.5 KM");
+        disdanceView[2].setText("- " + "2.84 KM");
         disdanceView[2].setTextSize(12);
         disdanceView[2].setTextColor(0x4400fdfa);
-        disdanceView[3].setText("- " + "0.5 KM");
+        disdanceView[3].setText("- " + "1.53 KM");
         disdanceView[3].setTextSize(12);
         disdanceView[3].setTextColor(0x4400fdfa);
         for(TextView view : disdanceView){
@@ -407,6 +410,10 @@ public class RadarScene extends FrameLayout {
         mRadarScanAni.start();
         mHandler.removeMessages(MSG_RADAR_SCAN_ANI);
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
+
+        for(int i = 0; i < 5; i++) {
+            updateContentViewSataus();
+        }
 
 
     }
@@ -632,20 +639,34 @@ public class RadarScene extends FrameLayout {
 
                 int radius = 0;
 
+                int distance = 0;
+
+                long used;
+
                 if(random < RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
+                    distance = (int) (300 + Math.random()* 500);
                 }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
+                    distance = (int) (900 + Math.random()* 1100);
                 }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
+                    distance = (int) (2100 + Math.random()* 700);
                 }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
+                    distance = (int) (2900 + Math.random()*  1500);
                 }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
+                    distance = (int) (4500 + Math.random()* 2000);
                 }
 
+                used = hotApp.getDownloadNum();
 
                 view.setRadius(radius);
+
+                view.setDistance(distance);
+
+                view.setUsed(used);
                 //*/
 
                 //test
@@ -691,6 +712,8 @@ public class RadarScene extends FrameLayout {
                 statusTextView.setVisibility(GONE);
                 view.setIndicatorTextView(statusTextView);
 
+
+
                 mContentTempleteView[count] = view;
                 count += 1;
 
@@ -700,14 +723,13 @@ public class RadarScene extends FrameLayout {
             }
         }
 
-        //requestLayout();
-
     }
 
     public void clearData(){
-        for(int i = 0; i < mContentTempleteView.length; i++){
+        for(int i = 0; i < mContentTempleteView.length; i++) {
             removeView(mContentTempleteView[i]);
         }
+        initMapList();
         count = 0;
     }
 
@@ -738,7 +760,7 @@ public class RadarScene extends FrameLayout {
     private void updateContentViewSataus(){
         final int random = (int) (Math.random()* mContentTempleteView.length);
         int randomstatus = (int) (10 + Math.random()* 50);
-        Log.i("zccc", "   onAnimatioupdateContentViewSatausnRepeat --- ");
+        //Log.i("zccc", "   onAnimatioupdateContentViewSatausnRepeat --- ");
         if(mContentTempleteView[random] != null){
             if(mContentTempleteView[random].getIshowattention()){
                 return;
@@ -746,13 +768,30 @@ public class RadarScene extends FrameLayout {
             final ImageView imageView = mContentTempleteView[random].getCircleAniImage();
             final IndicatorTextView statusView = mContentTempleteView[random].getIndicatorTextView();
             final int sex = mContentTempleteView[random].getIconViewSex();
-            if(randomstatus > 25){
+            if(randomstatus > 40) {
                 statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
+            }else if(randomstatus > 30 && randomstatus < 40) {
+                String used = String.format(mContext.getResources().getString(R.string.has_userd), mContentTempleteView[random].getUsed());
+                statusView.setText(used);
+            }else if(randomstatus > 20 && randomstatus < 30){
+                String distance;
+                if(mContentTempleteView[random].getDistance() > 1000){
+                    float dis = (float) mContentTempleteView[random].getDistance() / 1000;
+                    DecimalFormat decimalFormat=new DecimalFormat(".00");
+                    distance = decimalFormat.format(dis);
+                    statusView.setText(distance + mContext.getResources().getString(R.string.distance_km));
+                }else{
+                    distance = String.format(mContext.getResources().getString(R.string.distance_mi),
+                            mContentTempleteView[random].getDistance());
+                    statusView.setText(distance);
+                }
             }else{
                 statusView.setText(sex==0?mContext.getResources().getString(R.string.app_status_discrible_female) :
                         mContext.getResources().getString(R.string.app_status_discrible_male));
             }
+
             statusView.setSingleLine();
+            statusView.forceLayout();
             statusView.setVisibility(VISIBLE);
             if(imageView != null && statusView != null){
                 Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
@@ -767,12 +806,9 @@ public class RadarScene extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        mHandler.sendEmptyMessage(MSG_UPDATE_STATUS);
                         imageView.setVisibility(GONE);
                         statusView.setVisibility(GONE);
                         mContentTempleteView[random].setIshowattention(false);
-                        Log.i("zccc", "   onAnimationRepeat --- ");
-                        //mHandler.removeMessages(MSG_UPDATE_STATUS);
                     }
 
                     @Override

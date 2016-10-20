@@ -57,8 +57,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private MyAdapter mMyAdapter;
 
     private CircleMenu mCircleMenu;
+    private int mCircleMenuNum;
     private TextView mAppSearch;
     private TextView mVideoSearch;
+
+
     private ImageView mBack;
 
     private AVLoadingIndicatorView avLoadingIndicatorView;
@@ -102,7 +105,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean firststart = sp.getBoolean(KEY_FIRST, true);
 
         mGuideViewStub = (ViewStub)findViewById(R.id.discovery_guide);
-
+        mGuideViewStub.inflate();
+        mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
+        if(mGuideStart != null){
+            mGuideStart.setOnClickListener(this);
+        }
         if(firststart) {
             mGuideViewStub.setVisibility(View.VISIBLE);
         }else{
@@ -139,6 +146,45 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
+        mMyAdapter = new MyAdapter();
+
+        mHoloScene.setAdapter(mMyAdapter);
+
+        onFirstLoadData();
+
+        createCircleMenu();
+
+    }
+
+    protected void onResume() {
+        super.onResume();
+    }
+
+    private void onFirstLoadData(){
+        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
+    }
+
+    public void refreshData(){
+        avLoadingIndicatorView.show();
+        mHoloScene.clearData();
+        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
+    }
+
+    public void createCircleMenu(){
+           mCircleMenuNum = 5;
+           for(int i = 0; i < mCircleMenuNum; i++){
+               TextView view = new TextView(this);
+               view.setText(i + " menu ");
+               view.setAllCaps(true);
+               view.setGravity(17);
+               view.setTextSize(18);
+               CommonUtils.setTextShadow(view,
+                       getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
+               RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
+               mCircleMenu.addView(view, mVidoLayoutParams);
+           }
+
+        /*/
         mVideoSearch = new TextView(this);
         mVideoSearch.setText(getResources().getString(R.string.video_search));
         mVideoSearch.setAllCaps(true);
@@ -158,27 +204,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
         RelativeLayout.LayoutParams mAppLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
         mCircleMenu.addView(mAppSearch, mAppLayoutParams);
-
-        mMyAdapter = new MyAdapter();
-
-        mHoloScene.setAdapter(mMyAdapter);
-
-        onFirstLoadData();
-
-    }
-
-    protected void onResume() {
-        super.onResume();
-    }
-
-    private void onFirstLoadData(){
-        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
-    }
-
-    public void refreshData(){
-        avLoadingIndicatorView.show();
-        mHoloScene.clearData();
-        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
+        //*/
     }
 
     public  int dip2px(Context context, float dpValue) {

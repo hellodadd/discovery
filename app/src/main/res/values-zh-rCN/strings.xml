@@ -6,8 +6,10 @@
     <string name="software_share_titile">分享</string>
 
     <string name="distance_km">公里</string>
+    <string name="distance_mi">%d 米</string>
     <string name="discovery_radar_icon_corner_subscription">这是你关注的</string>
     <string name="app_status_discrible_male">一个女生在用</string>
     <string name="app_status_discrible_female">一个男生在用</string>
+    <string name="has_userd">%d 人在用</string>
 
 </resources>

@@ -45,7 +45,8 @@ public class CircleMenu extends RelativeLayout {
 
     private double mRadian;
 
-    private View mView;
+    private View mFocusView;
+    private int  mFocusIndex;
 
     private float downX;
     private float downY;
@@ -164,13 +165,13 @@ public class CircleMenu extends RelativeLayout {
 
     private void rotateCircleMenu(){
         if (Math.toDegrees(mRadian) < Math.abs(Math.toDegrees(mPosition[1]) / 2.0D)) {
-            if (mView == mChildView[0]){
+            if (mFocusView == mChildView[0]){
                 rotateCircleMenuAni(mRadian, 0.0D);
             }else{
                 rotateCircleMenuAni(mRadian, Math.abs(mPosition[1]));
             }
         }else{
-            if (mView == mChildView[0]){
+            if (mFocusView == mChildView[0]){
                rotateCircleMenuAni(mRadian, 0.0D);
             }else{
                 rotateCircleMenuAni(mRadian, Math.abs(mPosition[1]));
@@ -189,12 +190,9 @@ public class CircleMenu extends RelativeLayout {
             }
 
             public final void onAnimationEnd(Animator paramAnimator) {
-                if(mView == mChildView[0]){
-                    setViewDegrees(0);
-                }else{
-                    setViewDegrees(1);
-                }
-                mItemClickListener.menuItemClick(0);
+
+                setViewDegrees(mFocusIndex);
+                mItemClickListener.menuItemClick(mFocusIndex);
             }
 
             public final void onAnimationStart(Animator paramAnimator) {
@@ -213,27 +211,20 @@ public class CircleMenu extends RelativeLayout {
     }
 
     private void switchView(int dis){
-        //Log.i("zccc", "zccc -------- dis = " + dis);
-       /*for(int i = 0; i < mChildCount; i++){
-           View view = getChildAt(i);
-           float x = view.getX();
-           int w = view.getWidth();
-           Log.i("zccc", "zccc -------- x = " + x + " ---- w " + w);
-           if((((dis >= 0) || (x >= 0.0F))) && (((x + w <= mWidth) || (dis <= 0)))){
-               mIsSwitchView = false;
-           }
-       }*/
-        float x0 = getChildAt(0).getX();
-        float x1 = getChildAt(1).getX();
+        int distance[] = new int[mChildCount];
 
-        //Log.i("zccc", "zccc -------- x = " + x0 + " ---- x1 " + x1);
-        if(Math.abs(x0 - mWidth/2) < Math.abs(x1 - mWidth/2)){
-            mView = mChildView[0];
-        }else{
-            mView = mChildView[1];
+        for(int i = 0; i < mChildCount; i++){
+            distance[i] = Math.abs((int) getChildAt(i).getX() - mWidth/2);
         }
 
-       // mIsSwitchView = true;
+        int min = distance[0];
+        mFocusIndex = 0;
+        for(int i = 0; i < distance.length; i++){
+            if(distance[i] < min){
+                min = distance[i];
+                mFocusIndex = i;
+            }
+        }
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -295,28 +286,22 @@ public class CircleMenu extends RelativeLayout {
             if(childviewTop == 0){
                 childviewTop = mMenuHeight - height / 2;
             }
-            if(i != 0){
+            //if(i != 0){
                 float menuHeight = childviewLeft2 + width / 2 - mWidth / 2;
                 mPosition[i] = (-Math.atan(menuHeight / mMenuHeight));
-            }
+            //}
             childview.layout(childviewLeft, childviewTop, childviewLeft + width, childviewTop + height);
             childviewLeft2 += width + mItemMargin;
         }
 
-        setViewDegrees(1);
+        setViewDegrees(mChildCount/2);
 
     }
 
     public final void setViewDegrees(int degrees){
-        if (degrees == 0) {
-            mRadian = 0.0D;
-            mView = mChildView[0];
-            setViewDegrees(0.0D);
-        }else{
-            mView = mChildView[1];
-            mRadian = Math.abs(mPosition[1]);
-            setViewDegrees(mRadian);
-        }
+        mFocusView = mChildView[degrees];
+        mRadian = Math.abs(mPosition[degrees]);
+        setViewDegrees(mRadian);
     }
 
     public final void setViewDegrees(double degrees){

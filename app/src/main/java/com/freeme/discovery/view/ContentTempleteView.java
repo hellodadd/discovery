@@ -35,6 +35,10 @@ public class ContentTempleteView extends FrameLayout {
 
     private boolean ishowattention;
 
+    private int distance;
+
+    private long used;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -122,7 +126,24 @@ public class ContentTempleteView extends FrameLayout {
         return  ishowattention;
     }
 
-   /* public void requestLayout(){
+    public void setDistance(int dis){
+        distance = dis;
+    }
 
-    }*/
+    public int getDistance(){
+        return  distance;
+    }
+
+    public void setUsed(long used){
+        this.used = used;
+    }
+
+    public long getUsed(){
+        return used;
+    }
+
+
+
+   public void requestLayout(){
+    }
 }

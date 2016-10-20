@@ -75,14 +75,6 @@ public class GuideView extends FrameLayout {
                 }
             }
         });
-
-        mGuideStart = (TextView)findViewById(R.id.discovery_rule_start);
-        mGuideStart.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                  
-            }
-        });
     }
 
 }

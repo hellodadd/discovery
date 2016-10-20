@@ -112,7 +112,5 @@ public class IconView extends FrameLayout{
         circleAniImage.setRotation(rotation);
     }
 
-    public void requestLayout(){
 
-    }
 }

@@ -24,6 +24,7 @@ public class RadarScanDotView extends ImageView {
 
     public RadarScanDotView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setWillNotDraw(false);
     }
 
     public int getOrginX(){
@@ -48,5 +49,9 @@ public class RadarScanDotView extends ImageView {
 
     public int getRadius(){
         return radius;
+    }
+
+    public void requestLayout(){
+
     }
 }
