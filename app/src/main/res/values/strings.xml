@@ -18,6 +18,12 @@
     <string name="discovery_guide_meet_friends">Meet friends nearby</string>
     <string name="has_userd">%d Users</string>
 
+    <string name="discovery_dialog_type_connection_error_btn_cancel">CANCEL</string>
+    <string name="discovery_dialog_type_connection_error_btn_settings">SETTINGS</string>
+    <string name="discovery_dialog_type_connection_error_btn_try_again">TRY AGAIN</string>
+    <string name="discovery_dialog_type_connection_error_content">Unable to connect with the server.Check your internet connection and try again</string>
+    <string name="discovery_dialog_type_connection_error_title">Connection Error</string>
+
     <string name="software_share_text">Freeme Launcher:beautiful launcher with fast speed and good use experience, just try it.https://play.google.com/store/apps/details?id=com.freeme.freemelite.odm</string>
     <string name="software_share_titile">share</string>
 </resources>

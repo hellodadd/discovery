@@ -24,7 +24,6 @@ public class GuideView extends FrameLayout {
     private TextView mGuideStart;
 
 
-
     public GuideView(Context context){
         this(context, null);
     }

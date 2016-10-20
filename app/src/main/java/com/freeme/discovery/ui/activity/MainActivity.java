@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewStub mGuideViewStub;
     private TextView mGuideStart;
 
+    private ViewStub mConnectErrorDialog;
+
     private ImageView mShareButton;
     private ImageView mRefreshButton;
     private ImageView mScanStopButton;
@@ -115,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             mGuideViewStub.setVisibility(View.GONE);
         }
+
+        mConnectErrorDialog = (ViewStub)findViewById(R.id.discovery_connect_error);
+        mConnectErrorDialog.inflate();
+        mConnectErrorDialog.setVisibility(View.VISIBLE);
 
         mShareButton = (ImageView)findViewById(R.id.discovery_share_button);
         mShareButton.setOnClickListener(this);
