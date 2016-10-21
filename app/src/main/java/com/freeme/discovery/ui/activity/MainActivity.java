@@ -4,16 +4,16 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,7 +29,6 @@ import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.NetworkUtils;
 import com.freeme.discovery.view.CircleMenu;
-import com.freeme.discovery.view.GuideView;
 import com.freeme.discovery.view.RadarScene;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -69,7 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ViewStub mGuideViewStub;
     private TextView mGuideStart;
 
-    private ViewStub mConnectErrorDialog;
 
     private ImageView mShareButton;
     private ImageView mRefreshButton;
@@ -101,7 +99,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         avLoadingIndicatorView = (AVLoadingIndicatorView)findViewById(R.id.discovery_loading_layout) ;
-        //avLoadingIndicatorView.show();
+        avLoadingIndicatorView.show();
+
+        if(!CommonUtils.isNetworkConnected(this)){
+            showNetConnectError();
+        }
 
         SharedPreferences sp = this.getSharedPreferences("discovery", MODE_PRIVATE);
         boolean firststart = sp.getBoolean(KEY_FIRST, true);
@@ -117,10 +119,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }else{
             mGuideViewStub.setVisibility(View.GONE);
         }
-
-        mConnectErrorDialog = (ViewStub)findViewById(R.id.discovery_connect_error);
-        mConnectErrorDialog.inflate();
-        mConnectErrorDialog.setVisibility(View.VISIBLE);
 
         mShareButton = (ImageView)findViewById(R.id.discovery_share_button);
         mShareButton.setOnClickListener(this);
@@ -189,28 +187,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
                mCircleMenu.addView(view, mVidoLayoutParams);
            }
-
-        /*/
-        mVideoSearch = new TextView(this);
-        mVideoSearch.setText(getResources().getString(R.string.video_search));
-        mVideoSearch.setAllCaps(true);
-        mVideoSearch.setGravity(17);
-        mVideoSearch.setTextSize(26);
-        CommonUtils.setTextShadow(mVideoSearch,
-                getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
-        RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
-        mCircleMenu.addView(mVideoSearch, mVidoLayoutParams);
-
-        mAppSearch = new TextView(this);
-        mAppSearch.setText(getResources().getString(R.string.app_search));
-        mAppSearch.setAllCaps(true);
-        mAppSearch.setGravity(17);
-        mAppSearch.setTextSize(26);
-        CommonUtils.setTextShadow(mAppSearch,
-                getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
-        RelativeLayout.LayoutParams mAppLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
-        mCircleMenu.addView(mAppSearch, mAppLayoutParams);
-        //*/
     }
 
     public  int dip2px(Context context, float dpValue) {
@@ -262,6 +238,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 editor.commit();
                 break;
         }
+    }
+
+    private void showNetConnectError(){
+        LayoutInflater inflater = getLayoutInflater();
+
+        View dialog = inflater.inflate(R.layout.discovery_connect_error_dialog, null);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CoustomDialog);
+        builder.setView(dialog);
+        final AlertDialog alertDialog = builder.create();
+
+        TextView cancleButton = (TextView)dialog.findViewById(R.id.connect_setting_cancel);
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.cancel();
+                finish();
+            }
+        });
+
+        Button setButton = (Button)dialog.findViewById(R.id.connect_setting_button);
+        setButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent("android.settings.SETTINGS"));
+                finish();
+            }
+        });
+
+
+        alertDialog.show();
     }
 
 

@@ -112,10 +112,4 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent" />
 
-    <ViewStub
-        android:id="@+id/discovery_connect_error"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout="@layout/discovery_connect_error_dialog"/>
-
 </FrameLayout>
