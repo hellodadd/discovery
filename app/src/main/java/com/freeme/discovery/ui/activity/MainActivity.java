@@ -23,12 +23,18 @@ import com.freeme.discovery.base.Body;
 import com.freeme.discovery.base.BodyFactory;
 import com.freeme.discovery.base.DownloadInfo;
 import com.freeme.discovery.base.MessageCode;
+import com.freeme.discovery.bean.AppBean;
+import com.freeme.discovery.bean.CategoryBean;
 import com.freeme.discovery.bean.apps.HotApp;
 import com.freeme.discovery.bean.apps.HotAppBody;
+import com.freeme.discovery.http.HttpInterface;
+import com.freeme.discovery.http.RequstApkListClient;
+import com.freeme.discovery.http.RequstCategoryClient;
 import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.NetworkUtils;
 import com.freeme.discovery.view.CircleMenu;
+import com.freeme.discovery.view.CircleMenuItemView;
 import com.freeme.discovery.view.RadarScene;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -37,6 +43,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -44,6 +51,9 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
+import retrofit2.Call;
+import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -59,6 +69,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int mCircleMenuNum;
     private TextView mAppSearch;
     private TextView mVideoSearch;
+
+    private RequstCategoryClient requstCategoryClient;
+    private List<CategoryBean.CategorysBean> categorys;
+
+    private RequstApkListClient requstApkListClient;
+
+    private int mCurentCategoryId;
 
 
     private ImageView mBack;
@@ -145,8 +162,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mCircleMenu.setItemMargin(dip2px(this, 45.0f));
         mCircleMenu.setMenuItemClickListener(new CircleMenu.MenuItemClickListener() {
             @Override
-            public void menuItemClick(int postion) {
-                refreshData();
+            public void menuItemClick(int categoryId) {
+                mCurentCategoryId = categoryId;
+                refreshData(categoryId);
             }
         });
 
@@ -156,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         onFirstLoadData();
 
-        createCircleMenu();
+       // createCircleMenu();
 
     }
 
@@ -165,7 +183,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void onFirstLoadData(){
-        new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
+        requstCategory();
+        //new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
     }
 
     public void refreshData(){
@@ -187,6 +206,52 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
                mCircleMenu.addView(view, mVidoLayoutParams);
            }
+    }
+
+    public void createCircleMenu(List<CategoryBean.CategorysBean> categorys){
+        mCircleMenu.removeAllViews();
+
+                CircleMenuItemView itemView = new CircleMenuItemView(this);
+                itemView.setText("游戏");
+                itemView.setAllCaps(true);
+                itemView.setGravity(17);
+                itemView.setTextSize(18);
+                itemView.setCategoryPid(173);
+                CommonUtils.setTextShadow(itemView,
+                        getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
+                RelativeLayout.LayoutParams mVidoLayoutParams = new RelativeLayout.LayoutParams(-2, -2);
+                mCircleMenu.addView(itemView, mVidoLayoutParams);
+
+
+            CircleMenuItemView itemView1 = new CircleMenuItemView(this);
+            itemView1.setText("购物");
+            itemView1.setAllCaps(true);
+            itemView1.setGravity(17);
+            itemView1.setTextSize(18);
+            itemView1.setCategoryPid(118);
+            CommonUtils.setTextShadow(itemView1,
+                    getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
+            RelativeLayout.LayoutParams mitemView1Params = new RelativeLayout.LayoutParams(-2, -2);
+            mCircleMenu.addView(itemView1, mitemView1Params);
+
+            CircleMenuItemView itemView2 = new CircleMenuItemView(this);
+            itemView2.setText("交友");
+            itemView2.setAllCaps(true);
+            itemView2.setGravity(17);
+            itemView2.setTextSize(18);
+            itemView2.setCategoryPid(46);
+            CommonUtils.setTextShadow(itemView2,
+                    getResources().getColor(R.color.discovery_radar_wave),getResources().getColor(R.color.discovery_shadow));
+            RelativeLayout.LayoutParams mitemView2Params = new RelativeLayout.LayoutParams(-2, -2);
+            mCircleMenu.addView(itemView2, mitemView2Params);
+
+
+    }
+
+    public void refreshData(int categoryId){
+        avLoadingIndicatorView.show();
+        mHoloScene.clearData();
+        requstApkInfo(1, 40, categoryId);
     }
 
     public  int dip2px(Context context, float dpValue) {
@@ -221,7 +286,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 shareApp();
                 break;
             case R.id.discovery_refresh_button:
-                refreshData();
+                refreshData(118);
                 break;
             case R.id.discovery_rotate_button:
                 stopRadarSacn();
@@ -269,6 +334,57 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
 
         alertDialog.show();
+    }
+
+    public void requstCategory(){
+        if(requstCategoryClient == null){
+            requstCategoryClient = RequstCategoryClient.getInstance();
+        }
+
+        requstCategoryClient.getCategory(HttpInterface.DISCOBERY_TOKEN,
+                HttpInterface.DISCOBERY_KEY, new RequstCategoryClient.onRequstCategoryListen() {
+                    @Override
+                    public void onRequstCategorySuccess(Call<CategoryBean> call, Response<CategoryBean> response) {
+                        if(response != null){
+                            categorys = response.body().getCategorys();
+
+                            createCircleMenu(categorys);
+                        }
+                    }
+
+                    @Override
+                    public void onRequstCategoryFailure(Call<CategoryBean> call, Throwable t) {
+
+                    }
+                });
+    }
+
+    private void requstApkInfo(int page, int size, int categoryId){
+        if(requstApkListClient == null){
+            requstApkListClient = RequstApkListClient.getInstance();
+        }
+
+        Log.i(TAG, "reggg --------- response id " + categoryId);
+
+        requstApkListClient.getApkInfo(HttpInterface.DISCOBERY_TOKEN,
+                HttpInterface.DISCOBERY_KEY, page, size, categoryId, new RequstApkListClient.onRequstApkListen() {
+                    @Override
+                    public void onRequstApkSuccess(Call<AppBean> call, Response<AppBean> response) {
+                        Log.i(TAG, "reggg --------- response " + response.body().getApkInfos().size());
+                        if(response != null){
+                            if(mHoloScene != null){
+                                mHoloScene.updateData(response.body());
+                            }
+                            //updateHotApps(hotApps);
+                            avLoadingIndicatorView.hide();
+                        }
+                    }
+
+                    @Override
+                    public void onRequstApkFailure(Call<AppBean> call, Throwable t) {
+
+                    }
+                });
     }
 
 

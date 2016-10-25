@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.freeme.discovery.R;
+import com.freeme.discovery.bean.AppBean;
 import com.freeme.discovery.bean.apps.HotApp;
 import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.ui.adapter.MyAdapter;
@@ -87,6 +88,8 @@ public class RadarScene extends FrameLayout {
     private final ValueAnimator ac = new ValueAnimator();
 
     private ContentTempleteView mContentTempleteView[] = new ContentTempleteView[60];
+
+    private int mItemCount = 0;
 
     private final static int RADIAN_0 = 5;// 0 cicir show 5
     private final static int RADIAN_1 = 8;//
@@ -239,6 +242,7 @@ public class RadarScene extends FrameLayout {
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
 
+
         int startDisdance = CommonUtils.dip2px(mContext,50);
         for(int i = 0; i < 4; i++){
             disdanceView[i].layout(LcdWidth / 2 - CommonUtils.dip2px(mContext,20) , startDisdance,
@@ -248,6 +252,7 @@ public class RadarScene extends FrameLayout {
         }
 
 
+        mItemCount = 0;
         for(int i = 0; i < childCount; i++){
 
             View view = getChildAt(i);
@@ -265,6 +270,7 @@ public class RadarScene extends FrameLayout {
                 int t = LcdHeight -y;
                 iconView.layout(l, t, l + 400, t + 400);
                 iconView.setIconViewXY(l, t);
+                mItemCount +=1;
             }
 
             if("star_dot".equals(view.getTag())){
@@ -725,10 +731,129 @@ public class RadarScene extends FrameLayout {
 
     }
 
-    public void clearData(){
-        for(int i = 0; i < mContentTempleteView.length; i++) {
-            removeView(mContentTempleteView[i]);
+    public void updateData(AppBean appBean){
+        if(appBean != null && appBean.getTotalsize() > 0){
+            // Log.i("zccc", " update ----- count = " + count);
+            List<AppBean.ApkInfosBean> apkInfos = appBean.getApkInfos();
+            for(AppBean.ApkInfosBean infosBean : apkInfos){
+                ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
+                ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
+                mAsyncImageCache.displayImage(
+                        icon,48,48,
+                        new AsyncImageCache.NetworkImageGenerator(infosBean.getIconurl(),
+                                infosBean.getIconurl()), 10);
+                view.setTag("app");
+
+                //*/
+                int random = (int) (Math.random()* mapList.size());
+
+                int radian = (int) mapList.get(random);
+                Log.i("zccc", " update ----- radian = " + radian);
+                while (radian == 1000){
+                    random = (int) (Math.random()* mapList.size());
+                    radian = (int) mapList.get(random);
+                }
+
+                mapList.set(random, 1000);
+
+                view.setRadian(radian);
+
+                int radius = 0;
+
+                int distance = 0;
+
+                long used;
+
+                if(random < RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
+                    distance = (int) (300 + Math.random()* 500);
+                }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
+                    distance = (int) (900 + Math.random()* 1100);
+                }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
+                    distance = (int) (2100 + Math.random()* 700);
+                }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
+                    distance = (int) (2900 + Math.random()*  1500);
+                }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
+                    distance = (int) (4500 + Math.random()* 2000);
+                }
+
+                used = infosBean.getDownloadnum();
+
+                view.setRadius(radius);
+
+                view.setDistance(distance);
+
+                view.setUsed(used);
+                //*/
+
+                //test
+                /*/
+                int radian = 0;
+                if(count < 16){
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]));
+                    radian = (int) mapList.get(count + 26);
+                    //Log.i("zccc", " update ----- radian = " + radian);
+                }else if(count > 15 && count < 34){
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]));
+                    radian = (int) mapList.get(count + 26);
+                    Log.i("zccc", " update ----- radian = " + radian);
+                }else {
+                    view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]));
+                    radian = (int) mapList.get(count);
+                }
+
+                view.setRadian(radian);
+                count += 1;
+                //*/
+
+                TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
+                textView.setText(infosBean.getSname());
+
+                ImageView imageView = (ImageView)view.findViewById(R.id.animg);
+                imageView.setVisibility(GONE);
+                //*/
+
+                ImageView iconbg = (ImageView)view.findViewById(R.id.icon_bg);
+
+                view.setCircleAniImage(imageView);
+
+                int sex = new Random().nextInt(2);
+
+                view.setIconViewSex(sex);
+
+                if(sex == 0){
+                    iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                }
+
+                IndicatorTextView statusTextView = (IndicatorTextView)view.findViewById(R.id.status_textview);
+                statusTextView.setVisibility(GONE);
+                view.setIndicatorTextView(statusTextView);
+
+
+
+                mContentTempleteView[count] = view;
+
+
+                addView(view, new FrameLayout.LayoutParams(-2, -2));
+
+                count += 1;
+
+                updateContentViewSataus();
+            }
         }
+
+    }
+
+    public void clearData(){
+       // Log.i("dxd", "----------mContentTempleteView.length------ " + count);
+        for(int i = 0; i < mContentTempleteView.length; i++) {
+           removeView(mContentTempleteView[i]);
+        }
+        mapList.clear();
         initMapList();
         count = 0;
     }

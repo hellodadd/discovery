@@ -25,7 +25,7 @@ public class CircleMenu extends RelativeLayout {
 
     private int mChildCount;
 
-    private View[] mChildView;
+    private CircleMenuItemView[] mChildView;
     private double[] mPosition;
 
     private  int mWidth;
@@ -45,7 +45,7 @@ public class CircleMenu extends RelativeLayout {
 
     private double mRadian;
 
-    private View mFocusView;
+    private CircleMenuItemView mFocusView;
     private int  mFocusIndex;
 
     private float downX;
@@ -192,7 +192,7 @@ public class CircleMenu extends RelativeLayout {
             public final void onAnimationEnd(Animator paramAnimator) {
 
                 setViewDegrees(mFocusIndex);
-                mItemClickListener.menuItemClick(mFocusIndex);
+                //mItemClickListener.menuItemClick(mFocusIndex);
             }
 
             public final void onAnimationStart(Animator paramAnimator) {
@@ -267,7 +267,7 @@ public class CircleMenu extends RelativeLayout {
         super.onLayout(changed, l, t, r, b);
 
         mChildCount = getChildCount();
-        mChildView = new View[mChildCount];
+        mChildView = new CircleMenuItemView[mChildCount];
         mPosition = new double[mChildCount];
 
         int childviewLeft = 0;
@@ -276,7 +276,7 @@ public class CircleMenu extends RelativeLayout {
 
         for(int i = 0; i < mChildCount; i++){
             View childview = getChildAt(i);
-            mChildView[i] = childview;
+            mChildView[i] = (CircleMenuItemView) childview;
             int width = childview.getWidth();
             int height = childview.getHeight();
             if(childviewLeft == 0){
@@ -294,7 +294,9 @@ public class CircleMenu extends RelativeLayout {
             childviewLeft2 += width + mItemMargin;
         }
 
-        setViewDegrees(mChildCount/2);
+        if(mChildCount > 0) {
+            setViewDegrees(mChildCount / 2);
+        }
 
     }
 
@@ -302,6 +304,7 @@ public class CircleMenu extends RelativeLayout {
         mFocusView = mChildView[degrees];
         mRadian = Math.abs(mPosition[degrees]);
         setViewDegrees(mRadian);
+        mItemClickListener.menuItemClick(mFocusView.getCategoryPid());
     }
 
     public final void setViewDegrees(double degrees){
@@ -340,6 +343,6 @@ public class CircleMenu extends RelativeLayout {
     }
 
     public static abstract interface MenuItemClickListener {
-        public abstract void menuItemClick(int postion);
+        public abstract void menuItemClick(int categoryId);
     }
 }
