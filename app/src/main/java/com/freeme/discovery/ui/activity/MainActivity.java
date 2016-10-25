@@ -172,7 +172,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mHoloScene.setAdapter(mMyAdapter);
 
-        onFirstLoadData();
+        requstCategory();
+
+        //onFirstLoadData();
 
        // createCircleMenu();
 
@@ -182,10 +184,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onResume();
     }
 
-    private void onFirstLoadData(){
-        requstCategory();
-        //new GetOnlineHotAppsData().executeOnExecutor(fixedThreadPool, false);
+    protected void onPause(){
+        super.onPause();
+
+        if(mHoloScene != null){
+            mHoloScene.stopItemAttentionAni();
+        }
     }
+
 
     public void refreshData(){
         avLoadingIndicatorView.show();
@@ -245,7 +251,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             RelativeLayout.LayoutParams mitemView2Params = new RelativeLayout.LayoutParams(-2, -2);
             mCircleMenu.addView(itemView2, mitemView2Params);
 
+        onFirstLoadData();
 
+    }
+
+    private void onFirstLoadData(){
+        requstApkInfo(1, 40, 118);
     }
 
     public void refreshData(int categoryId){

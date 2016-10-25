@@ -144,6 +144,6 @@ public class ContentTempleteView extends FrameLayout {
 
 
 
-   public void requestLayout(){
+    public void requestLayout(){
     }
 }

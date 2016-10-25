@@ -129,7 +129,9 @@ public class RadarScene extends FrameLayout {
                     break;
                 case MSG_UPDATE_STATUS:
                     Log.i("zccc", "    MSG_UPDATE_STATUS   ");
-                    updateContentViewSataus();
+                    for(int i = 0; i < 5; i++) {
+                        updateContentViewSataus();
+                    }
                     break;
 
             }
@@ -409,7 +411,7 @@ public class RadarScene extends FrameLayout {
         mRadarScanAni.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
-
+               // updateContentViewSataus();
             }
         });
         mRadarScanAni.setDuration(3000L);
@@ -417,11 +419,8 @@ public class RadarScene extends FrameLayout {
         mHandler.removeMessages(MSG_RADAR_SCAN_ANI);
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
 
-        for(int i = 0; i < 5; i++) {
-            updateContentViewSataus();
-        }
-
-
+        mHandler.removeMessages(MSG_UPDATE_STATUS);
+        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_STATUS, 10);
     }
 
     private void updateAngleDefault(){
@@ -842,9 +841,10 @@ public class RadarScene extends FrameLayout {
 
                 count += 1;
 
-                updateContentViewSataus();
             }
         }
+
+        updateContentViewSataus();
 
     }
 
@@ -871,7 +871,7 @@ public class RadarScene extends FrameLayout {
             RadarScanDotView view = new RadarScanDotView(mContext);
             view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.start_dot));
             view.setTag("star_dot");
-            view.setRadius((int) (800 + Math.random()*400));
+            view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[i]));
 
             Animation alpha = AnimationUtils.loadAnimation(mContext,R.anim.dotviewani);
             LinearInterpolator linearInterpolator = new LinearInterpolator();
@@ -882,10 +882,10 @@ public class RadarScene extends FrameLayout {
         }
     }
 
+
     private void updateContentViewSataus(){
         final int random = (int) (Math.random()* mContentTempleteView.length);
         int randomstatus = (int) (10 + Math.random()* 50);
-        //Log.i("zccc", "   onAnimatioupdateContentViewSatausnRepeat --- ");
         if(mContentTempleteView[random] != null){
             if(mContentTempleteView[random].getIshowattention()){
                 return;
@@ -945,6 +945,16 @@ public class RadarScene extends FrameLayout {
                 imageView.setVisibility(VISIBLE);
                 mContentTempleteView[random].setIshowattention(true);
 
+            }
+        }
+    }
+
+    public void stopItemAttentionAni(){
+        for(int i = 0; i < mContentTempleteView.length; i++){
+            if(mContentTempleteView[i] != null){
+                Log.i("dxd", " ------------  stopItemAttentionAni");
+                mContentTempleteView[i].getCircleAniImage().setVisibility(GONE);;
+                mContentTempleteView[i].getIndicatorTextView().setVisibility(GONE);
             }
         }
     }

@@ -51,7 +51,7 @@ public class RadarScanDotView extends ImageView {
         return radius;
     }
 
-    public void requestLayout(){
+    //public void requestLayout(){
 
-    }
+    //}
 }
