@@ -625,7 +625,7 @@ public class RadarScene extends FrameLayout {
     private  int count = 0;
     public void updateData(ArrayList<HotApp> hotAppsInfo){
         if(hotAppsInfo != null && hotAppsInfo.size() > 0){
-            Log.i("zccc", " update ----- hotAppsInfo.size = " + hotAppsInfo.size());
+            //Log.i("zccc", " update ----- hotAppsInfo.size = " + hotAppsInfo.size());
            // Log.i("zccc", " update ----- count = " + count);
             for(HotApp hotApp : hotAppsInfo){
                 ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
@@ -640,7 +640,7 @@ public class RadarScene extends FrameLayout {
                 int random = (int) (Math.random()* mapList.size());
 
                 int radian = (int) mapList.get(random);
-                Log.i("zccc", " update ----- radian = " + radian);
+                //Log.i("zccc", " update ----- radian = " + radian);
                 while (radian == 1000){
                     random = (int) (Math.random()* mapList.size());
                     radian = (int) mapList.get(random);
@@ -755,7 +755,7 @@ public class RadarScene extends FrameLayout {
                 int random = (int) (Math.random()* mapList.size());
 
                 int radian = (int) mapList.get(random);
-                Log.i("zccc", " update ----- radian = " + radian);
+               // Log.i("zccc", " update ----- radian = " + radian);
                 while (radian == 1000){
                     random = (int) (Math.random()* mapList.size());
                     radian = (int) mapList.get(random);
@@ -902,7 +902,7 @@ public class RadarScene extends FrameLayout {
         for(int i = 0; i < mContentTempleteView.length; i++) {
             final ContentTempleteView view = mContentTempleteView[i];
             if (view != null && view.getAttentionType() == type) {
-                Log.i("ded", "   i = ----- " + i + "  type  ----- " + type);
+                //Log.i("ded", "   i = ----- " + i + "  type  ----- " + type);
                 if (view.getIshowattention()) {
                     return;
                 }
@@ -969,7 +969,7 @@ public class RadarScene extends FrameLayout {
     public void stopItemAttentionAni(){
         for(int i = 0; i < mContentTempleteView.length; i++){
             if(mContentTempleteView[i] != null){
-                Log.i("dxd", " ------------  stopItemAttentionAni");
+                //Log.i("dxd", " ------------  stopItemAttentionAni");
                 mContentTempleteView[i].getCircleAniImage().setVisibility(GONE);;
                 mContentTempleteView[i].getIndicatorTextView().setVisibility(GONE);
             }

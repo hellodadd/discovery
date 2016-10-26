@@ -260,7 +260,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void refreshData(int categoryId){
-        avLoadingIndicatorView.show();
+        //Log.i(TAG, "refres ------ ");
+        avLoadingIndicatorView.setVisibility(View.VISIBLE);
         mHoloScene.clearData();
         requstApkInfo(1, 40, categoryId);
     }
