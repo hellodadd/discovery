@@ -39,6 +39,8 @@ public class ContentTempleteView extends FrameLayout {
 
     private long used;
 
+    private int attentionType;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -142,8 +144,16 @@ public class ContentTempleteView extends FrameLayout {
         return used;
     }
 
-
-
-    public void requestLayout(){
+    public void setAttentionType(int type){
+        attentionType = type;
     }
+
+    public int getAttentionType(){
+        return attentionType;
+    }
+
+
+
+    //public void requestLayout(){
+    //}
 }

@@ -13,6 +13,8 @@ public class RadarScanDotView extends ImageView {
     private int orginX;
     private int orginY;
     private int radius;
+    private boolean layouted;
+    private float radian;
 
     public RadarScanDotView(Context context){
         this(context, null);
@@ -51,7 +53,23 @@ public class RadarScanDotView extends ImageView {
         return radius;
     }
 
-    //public void requestLayout(){
+    public void setLayouted(boolean layouted){
+        this.layouted = layouted;
+    }
 
-    //}
+    public boolean getLayouted(){
+        return layouted;
+    }
+
+    public void setRadian(float radian){
+        this.radian = radian;
+    }
+
+    public float getRadian(){
+        return radian;
+    }
+
+    public void requestLayout(){
+
+    }
 }

@@ -130,7 +130,7 @@ public class RadarScene extends FrameLayout {
                 case MSG_UPDATE_STATUS:
                     Log.i("zccc", "    MSG_UPDATE_STATUS   ");
                     for(int i = 0; i < 5; i++) {
-                        updateContentViewSataus();
+                        //updateContentViewSataus();
                     }
                     break;
 
@@ -239,7 +239,7 @@ public class RadarScene extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom){
         super.onLayout(changed, left, top, right, bottom);
 
-        //Log.i("ded", " -------------- onLayout ----------");
+        Log.i("ded", " -------------- onLayout ----------");
 
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
@@ -277,19 +277,20 @@ public class RadarScene extends FrameLayout {
 
             if("star_dot".equals(view.getTag())){
                 RadarScanDotView stardot = (RadarScanDotView) view;
-                mStartAngle %= 360;
+                float radian = stardot.getRadian();
+                radian %= 360;
                 int x, y;
                 float tmp = stardot.getRadius();
                 x = (int) Math.round(tmp
-                        * Math.cos(Math.toRadians(mStartAngle)));
+                        * Math.cos(Math.toRadians(radian)));
                 y = (int) Math.round(tmp
-                        * Math.sin(Math.toRadians(mStartAngle)));
+                        * Math.sin(Math.toRadians(radian)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
                 stardot.layout(l, t, l + 50, t + 50);
                 stardot.setOrginX(l);
                 stardot.setOrginY(t);
-                mStartAngle += (360/mStarDotNum);
+                stardot.setLayouted(true);
             }
         }
 
@@ -412,6 +413,10 @@ public class RadarScene extends FrameLayout {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                // updateContentViewSataus();
+                float value = ((Float)animation.getAnimatedValue()).floatValue();
+                if((int)value > 100){
+                    //updateContentViewSataus(new Random().nextInt(5));
+                }
             }
         });
         mRadarScanAni.setDuration(3000L);
@@ -420,7 +425,10 @@ public class RadarScene extends FrameLayout {
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
 
         mHandler.removeMessages(MSG_UPDATE_STATUS);
-        mHandler.sendEmptyMessageDelayed(MSG_UPDATE_STATUS, 10);
+        //mHandler.sendEmptyMessageDelayed(MSG_UPDATE_STATUS, 10);
+        //for(int i = 0; i < 5; i++) {
+            updateContentViewSataus(new Random().nextInt(5));
+       // }
     }
 
     private void updateAngleDefault(){
@@ -724,7 +732,7 @@ public class RadarScene extends FrameLayout {
 
                 addView(view, new FrameLayout.LayoutParams(-2, -2));
 
-                updateContentViewSataus();
+                //updateContentViewSataus();
             }
         }
 
@@ -787,6 +795,8 @@ public class RadarScene extends FrameLayout {
                 view.setDistance(distance);
 
                 view.setUsed(used);
+
+                view.setAttentionType(new Random().nextInt(5));
                 //*/
 
                 //test
@@ -844,7 +854,7 @@ public class RadarScene extends FrameLayout {
             }
         }
 
-        updateContentViewSataus();
+        //updateContentViewSataus();
 
     }
 
@@ -867,11 +877,14 @@ public class RadarScene extends FrameLayout {
     }
 
     private void showStarDot(){
+        int radian = 0;
         for(int i = 0; i < mStarDotNum; i++){
             RadarScanDotView view = new RadarScanDotView(mContext);
             view.setImageDrawable(mContext.getResources().getDrawable(R.drawable.start_dot));
             view.setTag("star_dot");
             view.setRadius(CommonUtils.dip2px(mContext,CommonUtils.RADIUS[i]));
+            view.setRadian(radian);
+            radian += 70;
 
             Animation alpha = AnimationUtils.loadAnimation(mContext,R.anim.dotviewani);
             LinearInterpolator linearInterpolator = new LinearInterpolator();
@@ -883,68 +896,72 @@ public class RadarScene extends FrameLayout {
     }
 
 
-    private void updateContentViewSataus(){
-        final int random = (int) (Math.random()* mContentTempleteView.length);
+    private void updateContentViewSataus(int type){
+        //final int random = (int) (Math.random()* mContentTempleteView.length);
         int randomstatus = (int) (10 + Math.random()* 50);
-        if(mContentTempleteView[random] != null){
-            if(mContentTempleteView[random].getIshowattention()){
-                return;
-            }
-            final ImageView imageView = mContentTempleteView[random].getCircleAniImage();
-            final IndicatorTextView statusView = mContentTempleteView[random].getIndicatorTextView();
-            final int sex = mContentTempleteView[random].getIconViewSex();
-            if(randomstatus > 40) {
-                statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
-            }else if(randomstatus > 30 && randomstatus < 40) {
-                String used = String.format(mContext.getResources().getString(R.string.has_userd), mContentTempleteView[random].getUsed());
-                statusView.setText(used);
-            }else if(randomstatus > 20 && randomstatus < 30){
-                String distance;
-                if(mContentTempleteView[random].getDistance() > 1000){
-                    float dis = (float) mContentTempleteView[random].getDistance() / 1000;
-                    DecimalFormat decimalFormat=new DecimalFormat(".00");
-                    distance = decimalFormat.format(dis);
-                    statusView.setText(distance + mContext.getResources().getString(R.string.distance_km));
-                }else{
-                    distance = String.format(mContext.getResources().getString(R.string.distance_mi),
-                            mContentTempleteView[random].getDistance());
-                    statusView.setText(distance);
+        for(int i = 0; i < mContentTempleteView.length; i++) {
+            final ContentTempleteView view = mContentTempleteView[i];
+            if (view != null && view.getAttentionType() == type) {
+                Log.i("ded", "   i = ----- " + i + "  type  ----- " + type);
+                if (view.getIshowattention()) {
+                    return;
                 }
-            }else{
-                statusView.setText(sex==0?mContext.getResources().getString(R.string.app_status_discrible_female) :
-                        mContext.getResources().getString(R.string.app_status_discrible_male));
-            }
-
-            statusView.setSingleLine();
-            statusView.forceLayout();
-            statusView.setVisibility(VISIBLE);
-            if(imageView != null && statusView != null){
-                Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
-                LinearInterpolator lin = new LinearInterpolator();
-                roateani.setInterpolator(lin);
-                roateani.setRepeatMode(Animation.RESTART);
-                roateani.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
+                final ImageView imageView = view.getCircleAniImage();
+                final IndicatorTextView statusView = view.getIndicatorTextView();
+                final int sex = view.getIconViewSex();
+                if (randomstatus > 40) {
+                    statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
+                } else if (randomstatus > 30 && randomstatus < 40) {
+                    String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
+                    statusView.setText(used);
+                } else if (randomstatus > 20 && randomstatus < 30) {
+                    String distance;
+                    if (view.getDistance() > 1000) {
+                        float dis = (float) view.getDistance() / 1000;
+                        DecimalFormat decimalFormat = new DecimalFormat(".00");
+                        distance = decimalFormat.format(dis);
+                        statusView.setText(distance + mContext.getResources().getString(R.string.distance_km));
+                    } else {
+                        distance = String.format(mContext.getResources().getString(R.string.distance_mi),
+                                view.getDistance());
+                        statusView.setText(distance);
                     }
+                } else {
+                    statusView.setText(sex == 0 ? mContext.getResources().getString(R.string.app_status_discrible_female) :
+                            mContext.getResources().getString(R.string.app_status_discrible_male));
+                }
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        imageView.setVisibility(GONE);
-                        statusView.setVisibility(GONE);
-                        mContentTempleteView[random].setIshowattention(false);
-                    }
+                statusView.setSingleLine();
+                statusView.forceLayout();
+                statusView.setVisibility(VISIBLE);
+                if (imageView != null && statusView != null) {
+                    Animation roateani = AnimationUtils.loadAnimation(mContext, R.anim.rotateimg);
+                    LinearInterpolator lin = new LinearInterpolator();
+                    roateani.setInterpolator(lin);
+                    roateani.setRepeatMode(Animation.RESTART);
+                    roateani.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        }
 
-                    }
-                });
-                imageView.setAnimation(roateani);
-                imageView.setVisibility(VISIBLE);
-                mContentTempleteView[random].setIshowattention(true);
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            imageView.setVisibility(GONE);
+                            statusView.setVisibility(GONE);
+                            view.setIshowattention(false);
+                        }
 
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+
+                        }
+                    });
+                    imageView.setAnimation(roateani);
+                    imageView.setVisibility(VISIBLE);
+                    view.setIshowattention(true);
+
+                }
             }
         }
     }
