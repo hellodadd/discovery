@@ -85,7 +85,7 @@ public class RadarScene extends FrameLayout {
 
     private int mStarDotNum = 5;
 
-    private final ValueAnimator ac = new ValueAnimator();
+    //private final ValueAnimator ac = new ValueAnimator();
 
     private ContentTempleteView mContentTempleteView[] = new ContentTempleteView[60];
 
@@ -440,17 +440,8 @@ public class RadarScene extends FrameLayout {
     }
 
     private void updateAngle(float angle){
-        //Log.d("zwb", "  --------------updateAngle-------angle-------  = " + angle);
-        if(ac != null){
-            //mRotateAngle -= angle; //(360.0F + ((Float)ac.getAnimatedValue()).floatValue()) % 360.0F;
-            //Log.d("zwb", "  --------------updateAngle--------------  " + mRotateAngle);
             mRotateAngle = angle;
             mBottomCicyleView.setRotation(-angle);
-
-
-            // mHandler.removeMessages(2);
-            // mHandler.sendEmptyMessage(2);
-
             mStartAngle = angle;
 
             float angleDelay = 360 / (20 - 1);
@@ -462,7 +453,6 @@ public class RadarScene extends FrameLayout {
                 View view = getChildAt(i);
                 if("app".equals(view.getTag())){
                     ContentTempleteView iconView = (ContentTempleteView) view;
-                    mStartAngle %= 360;
                     double radian = iconView.getRadian() + angle;
                     radian %= 360;
                     int x, y;
@@ -475,29 +465,25 @@ public class RadarScene extends FrameLayout {
                     int t = LcdHeight -y;
                     iconView.setTranslationX(l - iconView.getIconViewX());
                     iconView.setTranslationY(t - iconView.getIconViewY());
-                    invalidate();
-                    mStartAngle += angleDelay;
                 }
 
                 if("star_dot".equals(view.getTag())){
                     RadarScanDotView stardot = (RadarScanDotView) view;
-                    dotViewAngle %= 360;
+                    float rad = stardot.getRadian() + angle;
+                    rad %= 360;
                     int x, y;
                     float tmp = stardot.getRadius();
                     x = (int) Math.round(tmp
-                            * Math.cos(Math.toRadians(dotViewAngle)));
+                            * Math.cos(Math.toRadians(rad)));
                     y = (int) Math.round(tmp
-                            * Math.sin(Math.toRadians(dotViewAngle)));
+                            * Math.sin(Math.toRadians(rad)));
                     int l = LcdWidth / 2 + x;
                     int t = LcdHeight -y;
                     stardot.setTranslationX(l - stardot.getOrginX());
                     stardot.setTranslationY(t - stardot.getOrginY());
-                    //invalidate();
-                    dotViewAngle += (360/mStarDotNum);
                 }
 
             }
-        }
     }
 
     public boolean onInterceptTouchEvent(MotionEvent motionEvent){

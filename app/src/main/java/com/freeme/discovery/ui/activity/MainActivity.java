@@ -298,7 +298,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 shareApp();
                 break;
             case R.id.discovery_refresh_button:
-                refreshData(118);
+                refreshData(mCurentCategoryId);
                 break;
             case R.id.discovery_rotate_button:
                 stopRadarSacn();
