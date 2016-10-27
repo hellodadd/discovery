@@ -85,7 +85,6 @@ public class RadarScene extends FrameLayout {
 
     private int mStarDotNum = 5;
 
-    //private final ValueAnimator ac = new ValueAnimator();
 
     private ContentTempleteView mContentTempleteView[] = new ContentTempleteView[60];
 
@@ -239,8 +238,6 @@ public class RadarScene extends FrameLayout {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom){
         super.onLayout(changed, left, top, right, bottom);
 
-        Log.i("ded", " -------------- onLayout ----------");
-
         final int childCount = getChildCount();
         float angleDelay = 360 / (20 - 1);
 
@@ -298,34 +295,9 @@ public class RadarScene extends FrameLayout {
 
     protected void onDraw(Canvas canvas){
         super.onDraw(canvas);
-        //drawGridBackground(mContext, canvas);
-    }
-
-    private void drawGridBackground(Context context, Canvas canvas){
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2;
-        Bitmap grid = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.discovery_grid, options);
-        BitmapShader gridShader = new BitmapShader(grid, Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
-        int gridWidth = grid.getWidth();
-        int gridHeight = grid.getHeight();
-        float halfCanvasW = canvas.getWidth() / 2.0f;
-        float halfCanvasH = canvas.getHeight() / 2.0f;
-        float dx = (halfCanvasW / gridWidth - (int)(halfCanvasW / gridWidth) - 0.5F - 1.0F) * gridWidth;
-        float dy = (halfCanvasH / gridHeight - (int)(halfCanvasH / gridHeight) - 0.5F - 1.0F) * gridHeight;
-
-        Matrix matrix = new Matrix();
-        matrix.postTranslate(dx, dy);
-        gridShader.setLocalMatrix(matrix);
-        Paint paint = new Paint();
-        paint.setShader(gridShader);
-
-        canvas.drawRect(0.0f, 0.0f, (float) LcdWidth, (float) LcdHeight, paint);
     }
 
 
-    private void drawIconView(Context context, Canvas canvas){
-
-    }
 
     private void showDisdanceOnBackground(){
         for(int i = 0; i < 4; i++){
@@ -350,60 +322,6 @@ public class RadarScene extends FrameLayout {
         }
     }
 
-    private Bitmap getRadarBitmap(){
-        int width = (int)mViewWidth;
-        int height = (int)(1.0F * mViewHeight);
-        float radius = 0.33F * (int)(10.0D + Math.sqrt(height * height + width / 2.0F * (width / 2.0F)));
-        Bitmap radarBitmap = Bitmap.createBitmap((int)radius, (int) radius, Bitmap.Config.ARGB_8888);
-        Canvas radarCanvas = new Canvas(radarBitmap);
-
-        float mapWith = 0.33F * CommonUtils.dip2px(mContext, 10.0F);
-        float strokeWidth = 0.33F * CommonUtils.dip2px(mContext, 1.5F);
-        float yCoodinate = mapWith / 2.0F;
-
-        radarCanvas.rotate(-90.0F, 0.0F, radius);
-        radarCanvas.translate(0.0F, yCoodinate);
-
-        int indicatorColor = mContext.getResources().getColor(R.color.discovery_radar_indicator);
-        int waveColor = mContext.getResources().getColor(R.color.discovery_radar_wave);
-
-        int lineColor = indicatorColor & 0x70FFFFFF;
-        int gradientColor = 0xFFFFFF & indicatorColor;
-
-        SweepGradient localSweepGradient = new SweepGradient(0.0F, radius,
-                new int[] { lineColor, gradientColor, gradientColor,
-                        gradientColor, gradientColor, gradientColor,
-                        gradientColor, gradientColor, gradientColor },
-                new float[] { 0.0F, 0.1246F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F, 1.0F });
-
-        Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setShader(localSweepGradient);
-        radarCanvas.drawCircle(0.0F, radius, radius, paint);
-        radarCanvas.translate(0.0F, -yCoodinate);
-        Paint linePaint = new Paint();
-        linePaint.setAntiAlias(true);
-        linePaint.setColor(0xFF000000 | waveColor);
-        linePaint.setStrokeWidth(strokeWidth);
-        radarCanvas.drawLine(0.0F, radius + yCoodinate, radius, yCoodinate + radius, linePaint);
-        Paint wavePaint = new Paint(1);
-        wavePaint.setColor(waveColor);
-        int lineWidth = (int)(0.33F * CommonUtils.dip2px(mContext, 1.0F));
-        wavePaint.setStrokeWidth(lineWidth);
-        radarCanvas.drawLine(0.0F, radius, 0.0F, 0.0F, wavePaint);
-        for (int i = 0; i < 5; ++i) {
-            radarCanvas.drawLine(0.0F, radius, radius, i * -lineWidth, wavePaint);
-            radarCanvas.drawLine(0.0F, radius, radius, lineWidth * i, wavePaint);
-        }
-        Matrix matrix = new Matrix();
-        matrix.postScale(-1.0F, 1.0F);
-        Bitmap bitmap = Bitmap.createBitmap(radarBitmap, 0, 0,
-                radarBitmap.getWidth(), radarBitmap.getHeight(), matrix, true);
-        if (bitmap != radarBitmap) {
-            radarBitmap.recycle();
-        }
-        return bitmap;
-    }
 
     private void startRadarScanAni(){
         if(mRadarScanAni == null){
@@ -443,10 +361,6 @@ public class RadarScene extends FrameLayout {
             mRotateAngle = angle;
             mBottomCicyleView.setRotation(-angle);
             mStartAngle = angle;
-
-            float angleDelay = 360 / (20 - 1);
-
-            float dotViewAngle = angle;
 
             for(int i = 0; i < getChildCount(); i++){
 
@@ -511,7 +425,6 @@ public class RadarScene extends FrameLayout {
                 float d3 = getDistance(mViewCenterX, mViewHeight, lastX, lastY);
                 float degrees = (float)Math.toDegrees(Math.acos((d3 * d3 +
                         d2 * d2 - d * d) / (2.0D * d3 * d2)));
-                //mHandler.sendEmptyMessage(0);
                 if(Float.isNaN(degrees)){
                     degrees = 0.0f;
                 }
@@ -525,7 +438,6 @@ public class RadarScene extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
-                //mHandler.removeMessages(0);
                 mHandler.sendEmptyMessage(MSG_DEFAULT_ROTATE_SPEED);
                 break;
 
@@ -535,44 +447,10 @@ public class RadarScene extends FrameLayout {
     }
 
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    private void addAppView(){
-        for(int i = 0; i < 20; i++){
-            ContentTempleteView view = new ContentTempleteView(mContext);
-            view.setBackground(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg));
-            view.setTag("app");
-            addView(view,new FrameLayout.LayoutParams(-2, -2));
-        }
-
-        for(int i = 0; i < 20; i++){
-            ContentTempleteView view = new ContentTempleteView(mContext);
-            view.setBackground(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg));
-            view.setTag("app2");
-            addView(view,new FrameLayout.LayoutParams(-2, -2));
-        }
-
-        // postDelayed(new AutoRotateRunnable(30.0f), 500);
-    }
-
     private float getDistance(float x, float y, float x1, float y1){
         float dx = x - x1;
         float dy = y - y1;
         return  (float)Math.abs(Math.sqrt(dx * dx + dy * dy));
-    }
-
-    private class AutoRotateRunnable implements Runnable {
-
-        private float angelPerSecond;
-
-        public AutoRotateRunnable(float velocity){
-            this.angelPerSecond = velocity;
-        }
-        public void run() {
-            mStartAngle += 0.1;//(angelPerSecond / 30);
-            post(this);
-            //requestLayout();
-            //invalidate();
-        }
     }
 
     private void initMapList(){
@@ -611,8 +489,6 @@ public class RadarScene extends FrameLayout {
     private  int count = 0;
     public void updateData(ArrayList<HotApp> hotAppsInfo){
         if(hotAppsInfo != null && hotAppsInfo.size() > 0){
-            //Log.i("zccc", " update ----- hotAppsInfo.size = " + hotAppsInfo.size());
-           // Log.i("zccc", " update ----- count = " + count);
             for(HotApp hotApp : hotAppsInfo){
                 ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext).inflate(R.layout.iconlayout, null);
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
@@ -955,7 +831,6 @@ public class RadarScene extends FrameLayout {
     public void stopItemAttentionAni(){
         for(int i = 0; i < mContentTempleteView.length; i++){
             if(mContentTempleteView[i] != null){
-                //Log.i("dxd", " ------------  stopItemAttentionAni");
                 mContentTempleteView[i].getCircleAniImage().setVisibility(GONE);;
                 mContentTempleteView[i].getIndicatorTextView().setVisibility(GONE);
             }
