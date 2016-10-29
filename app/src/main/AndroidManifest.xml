@@ -5,8 +5,24 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <application android:allowBackup="true" android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name" android:supportsRtl="true" android:theme="@style/RadarTheme">
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/RadarTheme"
+        android:name=".DiscoveryApplication">
+
+        <meta-data
+            android:name="com.droi.sdk.application_id"
+            android:value="z83umbzh-I-s6Ilgi6RblS_UQ7Gqurs-lQB-994R" />
+        <meta-data
+            android:name="com.droi.sdk.platform_key"
+            android:value="wsEXquhV-BL9rrEohzC3xqqOzvkS2wm2xqqOzvkS" />
+        <meta-data
+            android:name="com.droi.sdk.channel_name"
+            android:value="1a6850e14a21a35162c53742" />
+
         <activity android:name=".ui.activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

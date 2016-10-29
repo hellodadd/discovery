@@ -41,6 +41,8 @@ public class ContentTempleteView extends FrameLayout {
 
     private int attentionType;
 
+    private String url;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -152,6 +154,13 @@ public class ContentTempleteView extends FrameLayout {
         return attentionType;
     }
 
+    public void setUrl(String url){
+        this.url = url;
+    }
+
+    public String getUrl(){
+        return url;
+    }
 
 
     //public void requestLayout(){

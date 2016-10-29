@@ -102,6 +102,11 @@ public class CircleMenu extends RelativeLayout {
 
     public boolean onTouchEvent(MotionEvent motionEvent){
         double distance1,distance2,distance3;
+
+        if(mChildCount == 0){
+            return true;
+        }
+
         downX = motionEvent.getX();
         downY = motionEvent.getY();
 
@@ -192,7 +197,7 @@ public class CircleMenu extends RelativeLayout {
             public final void onAnimationEnd(Animator paramAnimator) {
 
                 setViewDegrees(mFocusIndex);
-                mItemClickListener.menuItemClick(mFocusView.getCategoryPid());
+                mItemClickListener.menuItemClick(mFocusView.getMainType());
             }
 
             public final void onAnimationStart(Animator paramAnimator) {
@@ -342,6 +347,6 @@ public class CircleMenu extends RelativeLayout {
     }
 
     public static abstract interface MenuItemClickListener {
-        public abstract void menuItemClick(int categoryId);
+        public abstract void menuItemClick(String mainType);
     }
 }

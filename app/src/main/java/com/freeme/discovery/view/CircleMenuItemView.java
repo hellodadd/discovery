@@ -14,6 +14,7 @@ public class CircleMenuItemView extends TextView{
     private String categoryName;
     private int categoryId;
     private int categoryPid;
+    private String mainType;
 
     public CircleMenuItemView(Context context){
         this(context, null, 0);
@@ -41,6 +42,14 @@ public class CircleMenuItemView extends TextView{
 
     public int getCategoryPid(){
         return categoryPid;
+    }
+
+    public void setMainType(String mainType){
+        this.mainType = mainType;
+    }
+
+    public String getMainType(){
+        return mainType;
     }
 
     public interface onRequstItemInfoListen{

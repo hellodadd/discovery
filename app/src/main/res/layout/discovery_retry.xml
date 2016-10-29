@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+
+    <RelativeLayout
+        android:layout_width="350dp"
+        android:layout_height="300dp"
+        android:layout_gravity="center|center_vertical"
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:layout_marginLeft="60dp"
+            android:textColor="@color/discovery_title"
+            android:text="@string/discovery_dialog_type_connection_error_title"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/discovery_dialog_type_connection_error_msg"
+            android:layout_marginTop="100dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginRight="40dp"
+            android:textColor="@color/discovery_title"
+            />
+
+
+        <Button
+            android:id="@+id/connect_retry_button"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:text="@string/discovery_dialog_type_connection_retry"
+            android:background="@drawable/discovery_radar_button_bg"
+            android:textColor="@color/discovery_title"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginRight="47dp"
+            android:layout_marginEnd="47dp"
+            android:layout_marginBottom="46dp" />
+
+        <TextView
+            android:id="@+id/connect_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="56dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="120dp"
+            android:textColor="@color/discovery_title"
+            android:text="@string/discovery_dialog_type_connection_error_btn_cancel"/>
+
+
+
+
+    </RelativeLayout>
+
+</LinearLayout>
