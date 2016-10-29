@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'android-apt'
 
 android {
     compileSdkVersion 23
@@ -21,6 +22,13 @@ android {
     useLibrary 'org.apache.http.legacy'
 }
 
+repositories {
+    jcenter()
+    maven {
+        url "https://github.com/DroiBaaS/DroiBaaS-SDK-Android/raw/master/"
+    }
+}
+
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -33,4 +41,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.2'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
+    apt 'com.droi.sdk:annotationprocessor:+'
+    compile 'com.droi.sdk:Core:+'
 }
