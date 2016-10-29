@@ -355,12 +355,13 @@ public class RadarScene extends FrameLayout {
         float x = motionEvent.getX();
         float y = motionEvent.getY();
 
+        lastDegrees = mRotateAngle;
+
         int event = motionEvent.getActionMasked();
         switch (event){
             case MotionEvent.ACTION_DOWN:
                 lastX = motionEvent.getX();
                 lastY = motionEvent.getY();
-                lastDegrees = mRotateAngle;
                 mHandler.removeMessages(MSG_DEFAULT_ROTATE_SPEED);
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -375,6 +376,8 @@ public class RadarScene extends FrameLayout {
                 if (lastX - x < 0) {
                     degrees = -degrees;
                 }
+                lastX = x;
+                lastY = y;
                 updateAngle((360.0F + (degrees * 1.0F + lastDegrees)) % 360.0F);
                 break;
             case MotionEvent.ACTION_UP:

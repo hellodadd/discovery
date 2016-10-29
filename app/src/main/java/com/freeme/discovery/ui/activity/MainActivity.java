@@ -131,8 +131,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mRefreshButton.setOnClickListener(this);
         mScanStopButton = (ImageView) findViewById(R.id.discovery_rotate_button);
         mScanStopButton.setOnClickListener(this);
-        mFavriteButton = (ImageView) findViewById(R.id.discovery_type_button);
-        mFavriteButton.setOnClickListener(this);
 
         radarScene = (RadarScene) findViewById(R.id.folder_radar);
         radarScene.setOnItemClickListener(this);
@@ -308,8 +306,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.discovery_rotate_button:
                 stopRadarSacn();
-                break;
-            case R.id.discovery_type_button:
                 break;
             case R.id.discovery_rule_start:
                 if (mGuideViewStub != null) {
