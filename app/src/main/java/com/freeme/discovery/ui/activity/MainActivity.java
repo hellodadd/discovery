@@ -27,8 +27,10 @@ import com.freeme.discovery.http.RequstApkListClient;
 import com.freeme.discovery.http.RequstCategoryClient;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
+import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
+import com.freeme.discovery.utils.TestDroiBaas;
 import com.freeme.discovery.view.CircleMenu;
 import com.freeme.discovery.view.CircleMenuItemView;
 import com.freeme.discovery.view.RadarScene;
@@ -157,6 +159,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         initAppType();
 
+        //TestDroiBaas.CreateAppType();
+        //TestDroiBaas.requstApkInfo(1,40, 173);
+
+        //TestDroiBaas.requstTestVieo();
+
     }
 
     protected void onResume() {
@@ -228,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         getResources().getColor(R.color.discovery_shadow));
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-2, -2);
                 mCircleMenu.addView(menuItemView, lp);
+                mCircleMenu.setmFocusIndex(appTypeList.size() / 2);
             }
 
             fetchAppInfo(appTypeList.get(appTypeList.size() / 2).getMainType());
@@ -235,6 +243,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void fetchAppInfo(String mainType){
+        if(mainType.equals(CommonUtils.VIDEO_TYPE)){
+            fetchVideoInfo(mainType);
+            return;
+        }
         DroiCondition condition = DroiCondition.cond("mainType",
                 DroiCondition.Type.EQ, mainType);
         DroiQuery droiQuery = DroiQuery.Builder.newBuilder()
@@ -255,6 +267,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }else{
                         showNetConnectRetry();
+                }
+            }
+        });
+    }
+
+    private void fetchVideoInfo(String mainType){
+        DroiCondition condition = DroiCondition.cond("mainType",
+                DroiCondition.Type.EQ, mainType);
+        DroiQuery droiQuery = DroiQuery.Builder.newBuilder()
+                .limit(40)
+                .query(VideoInfo.class)
+                .where(condition)
+                .build();
+        droiQuery.runQueryInBackground(new DroiQueryCallback<VideoInfo>() {
+            @Override
+            public void result(List<VideoInfo> list, DroiError droiError) {
+                avLoadingIndicatorView.hide();
+                isRefreshing = false;
+                if(droiError.isOk()){
+                    if(list != null && list.size() > 0){
+                        if(radarScene != null){
+                            radarScene.updateVideoData((ArrayList<VideoInfo>) list);
+                        }
+                    }
+                }else{
+                    showNetConnectRetry();
                 }
             }
         });

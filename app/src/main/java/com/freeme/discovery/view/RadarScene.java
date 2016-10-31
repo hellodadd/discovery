@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.freeme.discovery.R;
 import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.models.AppInfo;
+import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.utils.CommonUtils;
 
 import java.text.DecimalFormat;
@@ -289,7 +290,7 @@ public class RadarScene extends FrameLayout {
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
 
         mHandler.removeMessages(MSG_UPDATE_STATUS);
-        updateContentViewSataus(new Random().nextInt(5));
+       // updateContentViewSataus(new Random().nextInt(5));
     }
 
     private void updateAngleDefault(){
@@ -426,35 +427,42 @@ public class RadarScene extends FrameLayout {
         long delay = 0;
         if(appInfosList != null && appInfosList.size() > 0){
             for(AppInfo appInfo : appInfosList){
+                String mainType = appInfo.getMainType();
+
+                int resourceType;
+
+                if(mainType.equals(CommonUtils.VIDEO_TYPE)){
+                    resourceType = R.layout.video_temp;
+                }else{
+                    resourceType = R.layout.iconlayout;
+                }
+
                 final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
-                        .inflate(R.layout.iconlayout, null);
+                        .inflate(resourceType, null);
+
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
+
                 mAsyncImageCache.displayImage(
                         icon,48,48,
                         new AsyncImageCache.NetworkImageGenerator(appInfo.getIconurl(),
                                 appInfo.getIconurl()), 10);
+
                 view.setTag("app");
 
-                //*/
-                int random = (int) (Math.random()* mapList.size());
 
+                int random = (int) (Math.random()* mapList.size());
                 int radian = (int) mapList.get(random);
-               // Log.i("zccc", " update ----- radian = " + radian);
                 while (radian == 1000){
                     random = (int) (Math.random()* mapList.size());
                     radian = (int) mapList.get(random);
                 }
-
                 mapList.set(random, 1000);
 
                 view.setRadian(radian);
 
                 int radius = 0;
-
                 int distance = 0;
-
                 long used;
-
                 if(random < RADIAN_0){
                     radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
                     distance = (int) (300 + Math.random()* 500);
@@ -482,7 +490,7 @@ public class RadarScene extends FrameLayout {
 
                 view.setAttentionType(new Random().nextInt(5));
 
-                view.setUrl(appInfo.getUrl());
+                view.setUrl("http://m.zhuoyi.com/detail.php?apk_id="+appInfo.getDocid());
                 //*/
 
                 TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
@@ -500,16 +508,209 @@ public class RadarScene extends FrameLayout {
 
                 view.setIconViewSex(sex);
 
-                if(sex == 0){
-                    iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                if(sex == 0) {
+                    if (iconbg != null){
+                        iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                    }
                 }
+
                 IndicatorTextView statusTextView = (IndicatorTextView)view.findViewById(R.id.status_textview);
                 statusTextView.setVisibility(GONE);
                 view.setIndicatorTextView(statusTextView);
 
+                if(mainType.equals(CommonUtils.VIDEO_TYPE)) {
+                    ImageView videoh = (ImageView) view.findViewById(R.id.video_h_ani_t);
+                    ImageView videoh_b = (ImageView) view.findViewById(R.id.video_h_ani_b);
+                    ImageView videov = (ImageView) view.findViewById(R.id.video_v_ani_l);
+                    ImageView videov_r = (ImageView) view.findViewById(R.id.video_v_ani_r);
+
+                    ImageView indline = (ImageView)view.findViewById(R.id.discovery_ind_line);
+
+                    ImageView sexImage = (ImageView)view.findViewById(R.id.icon_button_sex);
+
+
+                    videoh.setVisibility(GONE);
+                    videoh_b.setVisibility(GONE);
+                    videov.setVisibility(GONE);
+                    videov_r.setVisibility(GONE);
+
+                    indline.setVisibility(GONE);
+
+                    view.setVideo_h_t(videoh);
+                    view.setVideo_h_b(videoh_b);
+                    view.setVideo_v_l(videov);
+                    view.setVideo_v_r(videov_r);
+                    view.setIndline(indline);
+
+                    if(sexImage != null){
+                        if(view.getIconViewSex() == 0){
+                            sexImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_woman));
+                        }else{
+                            sexImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_man));
+                        }
+                    }
+                }
+
                 mContentTempleteView[count] = view;
 
                 view.setVisibility(GONE);
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setVisibility(VISIBLE);
+                    }
+                }, delay);
+
+                delay += 200;
+
+                icon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(view.getUrl());
+                    }
+                });
+
+                addView(view, new FrameLayout.LayoutParams(-2, -2));
+
+                count += 1;
+
+            }
+        }
+    }
+
+    public void updateVideoData(ArrayList<VideoInfo> videoInfoList){
+        long delay = 0;
+        if(videoInfoList != null && videoInfoList.size() > 0){
+            for(VideoInfo videoInfo : videoInfoList){
+                String mainType = videoInfo.getMainType();
+
+                int resourceType;
+
+                if(mainType.equals(CommonUtils.VIDEO_TYPE)){
+                    resourceType = R.layout.video_temp;
+                }else{
+                    resourceType = R.layout.iconlayout;
+                }
+
+                final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
+                        .inflate(resourceType, null);
+
+                ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
+
+                mAsyncImageCache.displayImage(
+                        icon,48,48,
+                        new AsyncImageCache.NetworkImageGenerator(videoInfo.getIconurl(),
+                                videoInfo.getIconurl()), 10);
+
+                view.setTag("app");
+
+
+                int random = (int) (Math.random()* mapList.size());
+                int radian = (int) mapList.get(random);
+                while (radian == 1000){
+                    random = (int) (Math.random()* mapList.size());
+                    radian = (int) mapList.get(random);
+                }
+                mapList.set(random, 1000);
+
+                view.setRadian(radian);
+
+                int radius = 0;
+                int distance = 0;
+                long used;
+                if(random < RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
+                    distance = (int) (300 + Math.random()* 500);
+                }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
+                    distance = (int) (900 + Math.random()* 1100);
+                }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
+                    distance = (int) (2100 + Math.random()* 700);
+                }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
+                    distance = (int) (2900 + Math.random()*  1500);
+                }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
+                    distance = (int) (4500 + Math.random()* 2000);
+                }
+
+                used = 100;//appInfo.getDownloadnum();
+
+                view.setRadius(radius);
+
+                view.setDistance(distance);
+
+                view.setUsed(used);
+
+                view.setAttentionType(new Random().nextInt(5));
+
+                view.setUrl(videoInfo.getUrl());
+                //*/
+
+                TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
+                textView.setText(videoInfo.getSname());
+
+                ImageView imageView = (ImageView)view.findViewById(R.id.animg);
+                imageView.setVisibility(GONE);
+                //*/
+
+                ImageView iconbg = (ImageView)view.findViewById(R.id.icon_bg);
+
+                view.setCircleAniImage(imageView);
+
+                int sex = new Random().nextInt(2);
+
+                view.setIconViewSex(sex);
+
+                if(sex == 0) {
+                    if (iconbg != null){
+                        iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                    }
+                }
+
+                IndicatorTextView statusTextView = (IndicatorTextView)view.findViewById(R.id.status_textview);
+                statusTextView.setVisibility(GONE);
+                view.setIndicatorTextView(statusTextView);
+
+                if(mainType.equals(CommonUtils.VIDEO_TYPE)) {
+                    ImageView videoh = (ImageView) view.findViewById(R.id.video_h_ani_t);
+                    ImageView videoh_b = (ImageView) view.findViewById(R.id.video_h_ani_b);
+                    ImageView videov = (ImageView) view.findViewById(R.id.video_v_ani_l);
+                    ImageView videov_r = (ImageView) view.findViewById(R.id.video_v_ani_r);
+
+                    ImageView indline = (ImageView)view.findViewById(R.id.discovery_ind_line);
+
+                    ImageView sexImage = (ImageView)view.findViewById(R.id.icon_button_sex);
+
+
+                    videoh.setVisibility(GONE);
+                    videoh_b.setVisibility(GONE);
+                    videov.setVisibility(GONE);
+                    videov_r.setVisibility(GONE);
+
+                    indline.setVisibility(GONE);
+
+                    view.setVideo_h_t(videoh);
+                    view.setVideo_h_b(videoh_b);
+                    view.setVideo_v_l(videov);
+                    view.setVideo_v_r(videov_r);
+                    view.setIndline(indline);
+
+                    if(sexImage != null){
+                        if(view.getIconViewSex() == 0){
+                            sexImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_woman));
+                        }else{
+                            sexImage.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_man));
+                        }
+                    }
+                }
+
+                mContentTempleteView[count] = view;
+
+                view.setVisibility(GONE);
+
                 mHandler.postDelayed(new Runnable() {
                     @Override
                     public void run() {

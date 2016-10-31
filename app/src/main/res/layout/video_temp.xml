@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.freeme.discovery.view.ContentTempleteView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/iconLayout"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <com.freeme.discovery.view.IconView
+            android:id="@+id/iconview"
+            android:layout_width="120dp"
+            android:layout_height="120dp">
+
+            <ImageView
+                android:id="@+id/animg"
+                android:layout_width="60dp"
+                android:layout_height="61dp"
+                android:layout_marginTop="4dp"
+                android:src="@drawable/discovery_video_ani" />
+
+            <ImageView
+                android:id="@+id/video_h_ani_t"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="14dp"
+                android:src="@drawable/discovery_video_ani_h" />
+
+            <ImageView
+                android:id="@+id/video_h_ani_b"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="86dp"
+                android:layout_marginLeft="3dp"
+                android:src="@drawable/discovery_video_ani_h" />
+
+            <ImageView
+                android:id="@+id/video_v_ani_l"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="3dp"
+                android:layout_marginTop="16dp"
+                android:src="@drawable/discovery_video_ani_v" />
+
+            <ImageView
+                android:id="@+id/video_v_ani_r"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginLeft="108dp"
+                android:src="@drawable/discovery_video_ani_v" />
+
+            <ImageView
+                android:id="@+id/icon_bg"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="6dp"
+                android:src="@drawable/discovery_video_bg"/>
+
+            <ImageView
+                android:id="@+id/icon_button_bg"
+                android:layout_width="101dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="69dp"
+                android:src="@drawable/discovery_video_button_bg"/>
+
+            <ImageView
+                android:id="@+id/icon_button_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="72dp"
+                android:src="@drawable/discovery_play"/>
+
+            <ImageView
+                android:id="@+id/icon_button_sex"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="90dp"
+                android:layout_marginTop="74dp"
+                android:src="@drawable/discovery_man"/>
+
+            <ImageView
+                android:id="@+id/hot_app_icon"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="12dp"/>
+
+            <ImageView
+                android:id="@+id/discovery_ind_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/discovery_ind_line"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="12dp"/>
+
+            <com.freeme.discovery.view.IndicatorTextView
+                android:id="@+id/status_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="16dp"
+                android:textSize="9sp"
+                android:layout_marginTop="4dp"
+                android:textColor="#00fdfa"
+                android:text="xxxxxxxxx"
+                />
+
+            <TextView
+                android:id="@+id/hot_app_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#00fdfa"
+                android:lines="2"
+                android:layout_marginTop="82dp"
+                android:layout_marginLeft="4dp"
+                android:textStyle="italic"
+                />
+
+        </com.freeme.discovery.view.IconView>
+
+
+
+    </LinearLayout>
+
+
+</com.freeme.discovery.view.ContentTempleteView>

@@ -169,7 +169,7 @@ public class CircleMenu extends RelativeLayout {
     }
 
     private void rotateCircleMenu(){
-        if (Math.toDegrees(mRadian) < Math.abs(Math.toDegrees(mPosition[1]) / 2.0D)) {
+        if (mChildCount > 1 && Math.toDegrees(mRadian) < Math.abs(Math.toDegrees(mPosition[1]) / 2.0D)) {
             if (mFocusView == mChildView[0]){
                 rotateCircleMenuAni(mRadian, 0.0D);
             }else{
@@ -300,7 +300,7 @@ public class CircleMenu extends RelativeLayout {
         }
 
         if(mChildCount > 0) {
-            setViewDegrees(mChildCount / 2);
+            setViewDegrees(mFocusIndex);
         }
 
     }
@@ -325,6 +325,9 @@ public class CircleMenu extends RelativeLayout {
         }
     }
 
+    public void setmFocusIndex(int id){
+        mFocusIndex = id;
+    }
 
     public void setItemMargin(int margin) {
         mItemMargin = margin;

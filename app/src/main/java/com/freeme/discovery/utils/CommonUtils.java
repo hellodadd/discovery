@@ -13,6 +13,9 @@ public class CommonUtils {
 
     public static int RADIUS[] = {200, 270, 350, 430, 510};
 
+    public static String VIDEO_TYPE = "video";
+    public static String SHOP_TYPE = "shop";
+
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);

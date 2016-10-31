@@ -43,6 +43,15 @@ public class ContentTempleteView extends FrameLayout {
 
     private String url;
 
+    private String mainType;
+
+    private ImageView video_h_t;
+    private ImageView video_h_b;
+    private ImageView video_v_l;
+    private ImageView video_v_r;
+
+    private ImageView indline;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -161,6 +170,55 @@ public class ContentTempleteView extends FrameLayout {
     public String getUrl(){
         return url;
     }
+
+    public void setMainType(String mainType){
+        this.mainType = mainType;
+    }
+
+    public String getMainType(){
+        return mainType;
+    }
+
+    public void setVideo_h_t(ImageView imageView){
+        video_h_t = imageView;
+    }
+
+    public ImageView getVideo_h_t(){
+        return video_h_t;
+    }
+
+    public void setVideo_h_b(ImageView imageView){
+        video_h_b = imageView;
+    }
+
+    public ImageView getVideo_h_b(){
+        return video_h_b;
+    }
+
+    public void setVideo_v_l(ImageView imageView){
+        video_v_l = imageView;
+    }
+
+    public ImageView getVideo_v_l(){
+        return video_v_l;
+    }
+
+    public void setVideo_v_r(ImageView imageView){
+        video_v_r = imageView;
+    }
+
+    public ImageView getVideo_v_r(){
+        return video_v_r;
+    }
+
+    public void setIndline(ImageView imageView){
+        this.indline = imageView;
+    }
+
+    public ImageView getIndline(){
+        return indline;
+    }
+
 
 
     //public void requestLayout(){
