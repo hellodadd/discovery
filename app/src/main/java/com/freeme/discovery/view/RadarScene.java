@@ -290,7 +290,8 @@ public class RadarScene extends FrameLayout {
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
 
         mHandler.removeMessages(MSG_UPDATE_STATUS);
-       // updateContentViewSataus(new Random().nextInt(5));
+        updateContentViewSataus(new Random().nextInt(5));
+        updateVideoTypeAttentionAni(new Random().nextInt(5));
     }
 
     private void updateAngleDefault(){
@@ -439,6 +440,8 @@ public class RadarScene extends FrameLayout {
 
                 final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
                         .inflate(resourceType, null);
+
+                view.setMainType(mainType);
 
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
 
@@ -596,20 +599,22 @@ public class RadarScene extends FrameLayout {
                 final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
                         .inflate(resourceType, null);
 
+                view.setMainType(mainType);
+
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
 
                 mAsyncImageCache.displayImage(
-                        icon,48,48,
+                        icon,214,144,
                         new AsyncImageCache.NetworkImageGenerator(videoInfo.getIconurl(),
                                 videoInfo.getIconurl()), 10);
 
                 view.setTag("app");
 
 
-                int random = (int) (Math.random()* mapList.size());
+                int random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
                 int radian = (int) mapList.get(random);
                 while (radian == 1000){
-                    random = (int) (Math.random()* mapList.size());
+                    random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
                     radian = (int) mapList.get(random);
                 }
                 mapList.set(random, 1000);
@@ -620,19 +625,19 @@ public class RadarScene extends FrameLayout {
                 int distance = 0;
                 long used;
                 if(random < RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[0]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[0]);
                     distance = (int) (300 + Math.random()* 500);
                 }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[1]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[1]);
                     distance = (int) (900 + Math.random()* 1100);
                 }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[2]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[2]);
                     distance = (int) (2100 + Math.random()* 700);
                 }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[3]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[3]);
                     distance = (int) (2900 + Math.random()*  1500);
                 }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS[4]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[4]);
                     distance = (int) (4500 + Math.random()* 2000);
                 }
 
@@ -666,7 +671,7 @@ public class RadarScene extends FrameLayout {
 
                 if(sex == 0) {
                     if (iconbg != null){
-                        iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                        //iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
                     }
                 }
 
@@ -776,7 +781,8 @@ public class RadarScene extends FrameLayout {
         int randomstatus = (int) (10 + Math.random()* 50);
         for(int i = 0; i < mContentTempleteView.length; i++) {
             final ContentTempleteView view = mContentTempleteView[i];
-            if (view != null && view.getAttentionType() == type) {
+            if (view != null && view.getAttentionType() == type
+                    && !view.getMainType().equals(CommonUtils.VIDEO_TYPE)) {
                 //Log.i("ded", "   i = ----- " + i + "  type  ----- " + type);
                 if (view.getIshowattention()) {
                     return;
@@ -837,6 +843,101 @@ public class RadarScene extends FrameLayout {
                     view.setIshowattention(true);
 
                 }
+            }
+        }
+    }
+
+    private void updateVideoTypeAttentionAni(int type){
+        int randomstatus = (int) (10 + Math.random()* 50);
+
+        for(int i = 0; i < mContentTempleteView.length; i++) {
+            final ContentTempleteView view = mContentTempleteView[i];
+            if(view != null && view.getAttentionType() == type
+                    && view.getMainType().equals(CommonUtils.VIDEO_TYPE)) {
+                final ImageView video_h_t = view.getVideo_h_t();
+                final ImageView video_h_b = view.getVideo_h_b();
+                final ImageView video_v_l = view.getVideo_v_l();
+                final ImageView video_v_r = view.getVideo_v_r();
+
+                final IndicatorTextView statusView = view.getIndicatorTextView();
+                final int sex = view.getIconViewSex();
+                if (randomstatus > 40) {
+                    statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
+                } else if (randomstatus > 30 && randomstatus < 40) {
+                    String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
+                    statusView.setText(used);
+                } else if (randomstatus > 20 && randomstatus < 30) {
+                    String distance;
+                    if (view.getDistance() > 1000) {
+                        float dis = (float) view.getDistance() / 1000;
+                        DecimalFormat decimalFormat = new DecimalFormat(".00");
+                        distance = decimalFormat.format(dis);
+                        statusView.setText(distance + mContext.getResources().getString(R.string.distance_km));
+                    } else {
+                        distance = String.format(mContext.getResources().getString(R.string.distance_mi),
+                                view.getDistance());
+                        statusView.setText(distance);
+                    }
+                } else {
+                    statusView.setText(sex == 0 ? mContext.getResources().getString(R.string.app_status_discrible_female) :
+                            mContext.getResources().getString(R.string.app_status_discrible_male));
+                }
+
+                statusView.setSingleLine();
+                statusView.forceLayout();
+                //statusView.setVisibility(VISIBLE);
+
+                final ImageView indline = view.getIndline();
+                //indline.setVisibility(VISIBLE);
+
+                Animation h_t = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h);
+                LinearInterpolator li = new LinearInterpolator();
+                h_t.setInterpolator(li);
+
+                Animation h_b = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h_b);
+                LinearInterpolator li_t = new LinearInterpolator();
+                h_b.setInterpolator(li_t);
+
+                Animation v_l = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v);
+                LinearInterpolator vl = new LinearInterpolator();
+                v_l.setInterpolator(vl);
+
+                Animation v_r = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v_r);
+                LinearInterpolator vr = new LinearInterpolator();
+                v_r.setInterpolator(vr);
+                //v_r.setRepeatMode(Animation.REVERSE);
+                v_r.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        video_h_t.setVisibility(GONE);
+                        video_h_b.setVisibility(GONE);
+                        video_v_l.setVisibility(GONE);
+                        video_v_r.setVisibility(GONE);
+
+                        statusView.setVisibility(GONE);
+                        indline.setVisibility(GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                video_h_t.setAnimation(h_t);
+                video_h_b.setAnimation(h_b);
+                video_v_l.setAnimation(v_l);
+                video_v_r.setAnimation(v_r);
+
+                video_h_t.setVisibility(VISIBLE);
+                video_h_b.setVisibility(VISIBLE);
+                video_v_l.setVisibility(VISIBLE);
+                video_v_r.setVisibility(VISIBLE);
             }
         }
     }
