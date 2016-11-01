@@ -79,6 +79,7 @@ public class ContentTempleteView extends FrameLayout {
         this.y = y;
     }
 
+
     public int getIconViewX(){
         return x;
     }

@@ -16,6 +16,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.WindowManager;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
@@ -226,6 +227,8 @@ public class RadarScene extends FrameLayout {
                 int t = LcdHeight -y;
                 iconView.layout(l, t, l + CommonUtils.dip2px(mContext,140), t + CommonUtils.dip2px(mContext,140));
                 iconView.setIconViewXY(l, t);
+
+
                 mItemCount +=1;
             }
 
@@ -891,10 +894,10 @@ public class RadarScene extends FrameLayout {
 
                 statusView.setSingleLine();
                 statusView.forceLayout();
-                statusView.setVisibility(VISIBLE);
+                //statusView.setVisibility(VISIBLE);
 
                 final ImageView indline = view.getIndline();
-                indline.setVisibility(VISIBLE);
+                //indline.setVisibility(VISIBLE);
 
                 LinearInterpolator lin = new LinearInterpolator();
 
@@ -939,12 +942,11 @@ public class RadarScene extends FrameLayout {
                 });
 
 
-
                 video_h_t.setAnimation(h_t);
                 video_h_b.setAnimation(h_b);
                 video_v_l.setAnimation(v_l);
                 video_v_r.setAnimation(v_r);
-                video_v_r.setTranslationY(0);
+               // video_v_r.setTranslationY(120);
 
                 video_h_t.setVisibility(VISIBLE);
                 video_h_b.setVisibility(VISIBLE);

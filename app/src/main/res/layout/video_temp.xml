@@ -21,9 +21,9 @@
                 android:src="@drawable/discovery_video_ani" />
 
             <RelativeLayout
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_marginTop="0dp"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:layout_marginTop="10dp"
                 >
 
             <ImageView
@@ -52,8 +52,8 @@
                 android:id="@+id/video_v_ani_r"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentRight="true"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginLeft="106dp"
                 android:src="@drawable/discovery_video_vertical" />
 
             <ImageView
@@ -120,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="#00fdfa"
                 android:lines="2"
-                android:layout_marginTop="82dp"
+                android:layout_marginTop="112dp"
                 android:layout_marginLeft="4dp"
                 android:textStyle="italic"
                 />
