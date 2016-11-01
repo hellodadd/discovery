@@ -3,9 +3,9 @@
 
 
     <translate
-        android:fromYDelta="-10%"
-        android:toYDelta="50%"
-        android:duration="500"
+        android:fromYDelta="-100%p"
+        android:toYDelta="20%"
+        android:duration="1000"
         android:repeatCount="10"
         />
 

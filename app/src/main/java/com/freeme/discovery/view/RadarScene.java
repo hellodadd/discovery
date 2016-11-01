@@ -1,5 +1,6 @@
 package com.freeme.discovery.view;
 
+import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
@@ -222,7 +224,7 @@ public class RadarScene extends FrameLayout {
                         * Math.sin(Math.toRadians(radian)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                iconView.layout(l, t, l + 400, t + 400);
+                iconView.layout(l, t, l + CommonUtils.dip2px(mContext,140), t + CommonUtils.dip2px(mContext,140));
                 iconView.setIconViewXY(l, t);
                 mItemCount +=1;
             }
@@ -425,6 +427,8 @@ public class RadarScene extends FrameLayout {
 
     private  int count = 0;
     public void updateData(ArrayList<AppInfo> appInfosList){
+        mapList.clear();
+        initMapList();
         long delay = 0;
         if(appInfosList != null && appInfosList.size() > 0){
             for(AppInfo appInfo : appInfosList){
@@ -584,6 +588,8 @@ public class RadarScene extends FrameLayout {
 
     public void updateVideoData(ArrayList<VideoInfo> videoInfoList){
         long delay = 0;
+        mapList.clear();
+        initMapList();
         if(videoInfoList != null && videoInfoList.size() > 0){
             for(VideoInfo videoInfo : videoInfoList){
                 String mainType = videoInfo.getMainType();
@@ -885,26 +891,29 @@ public class RadarScene extends FrameLayout {
 
                 statusView.setSingleLine();
                 statusView.forceLayout();
-                //statusView.setVisibility(VISIBLE);
+                statusView.setVisibility(VISIBLE);
 
                 final ImageView indline = view.getIndline();
-                //indline.setVisibility(VISIBLE);
+                indline.setVisibility(VISIBLE);
+
+                LinearInterpolator lin = new LinearInterpolator();
 
                 Animation h_t = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h);
-                LinearInterpolator li = new LinearInterpolator();
-                h_t.setInterpolator(li);
+
+
+                h_t.setInterpolator(lin);
 
                 Animation h_b = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h_b);
-                LinearInterpolator li_t = new LinearInterpolator();
-                h_b.setInterpolator(li_t);
+
+                h_b.setInterpolator(lin);
 
                 Animation v_l = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v);
-                LinearInterpolator vl = new LinearInterpolator();
-                v_l.setInterpolator(vl);
+
+                v_l.setInterpolator(lin);
 
                 Animation v_r = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v_r);
-                LinearInterpolator vr = new LinearInterpolator();
-                v_r.setInterpolator(vr);
+
+                v_r.setInterpolator(lin);
                 //v_r.setRepeatMode(Animation.REVERSE);
                 v_r.setAnimationListener(new Animation.AnimationListener() {
                     @Override
@@ -929,10 +938,13 @@ public class RadarScene extends FrameLayout {
                     }
                 });
 
+
+
                 video_h_t.setAnimation(h_t);
                 video_h_b.setAnimation(h_b);
                 video_v_l.setAnimation(v_l);
                 video_v_r.setAnimation(v_r);
+                video_v_r.setTranslationY(0);
 
                 video_h_t.setVisibility(VISIBLE);
                 video_h_b.setVisibility(VISIBLE);

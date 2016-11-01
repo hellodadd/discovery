@@ -258,7 +258,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void result(List<AppInfo> list, DroiError droiError) {
                 avLoadingIndicatorView.hide();
-                isRefreshing = false;
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
@@ -268,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else{
                         showNetConnectRetry();
                 }
+                isRefreshing = false;
             }
         });
     }
@@ -284,7 +284,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void result(List<VideoInfo> list, DroiError droiError) {
                 avLoadingIndicatorView.hide();
-                isRefreshing = false;
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
@@ -294,6 +293,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }else{
                     showNetConnectRetry();
                 }
+                isRefreshing = false;
             }
         });
     }
