@@ -22,6 +22,7 @@ import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -608,6 +609,11 @@ public class RadarScene extends FrameLayout {
                 final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
                         .inflate(resourceType, null);
 
+                View animLayout = view.findViewById(R.id.animLayout);
+                if(animLayout != null){
+                    view.setAnimlayout(animLayout);
+                }
+
                 view.setMainType(mainType);
 
                 ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
@@ -894,10 +900,10 @@ public class RadarScene extends FrameLayout {
 
                 statusView.setSingleLine();
                 statusView.forceLayout();
-                //statusView.setVisibility(VISIBLE);
+                statusView.setVisibility(VISIBLE);
 
                 final ImageView indline = view.getIndline();
-                //indline.setVisibility(VISIBLE);
+                indline.setVisibility(VISIBLE);
 
                 LinearInterpolator lin = new LinearInterpolator();
 
@@ -937,16 +943,94 @@ public class RadarScene extends FrameLayout {
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
+                           Log.i("zwb","  repeat ----");
+                    }
+                });
+
+                final TranslateAnimation topanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, -1,
+                        TranslateAnimation.RELATIVE_TO_SELF, 1,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0, TranslateAnimation.RELATIVE_TO_SELF, 0);
+                topanim.setDuration(500);
+                //inAnim.setRepeatCount(10);
+
+                final TranslateAnimation rightanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 0,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0,
+                        TranslateAnimation.RELATIVE_TO_SELF, -1, TranslateAnimation.RELATIVE_TO_SELF, 1);
+                rightanim.setDuration(500);
+
+                final TranslateAnimation bottomanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 1,
+                        TranslateAnimation.RELATIVE_TO_SELF, -1,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0, TranslateAnimation.RELATIVE_TO_SELF, 0);
+                bottomanim.setDuration(500);
+
+                final TranslateAnimation leftanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 0,
+                        TranslateAnimation.RELATIVE_TO_SELF, 0,
+                        TranslateAnimation.RELATIVE_TO_SELF, 1, TranslateAnimation.RELATIVE_TO_SELF, -1);
+                leftanim.setDuration(500);
+
+                video_h_t.clearAnimation();
+                video_h_t.startAnimation(topanim);
+
+                topanim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        video_v_r.clearAnimation();
+                        video_v_r.startAnimation(rightanim);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                rightanim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        video_h_b.clearAnimation();
+                        video_h_b.startAnimation(bottomanim);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                bottomanim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                          video_v_l.clearAnimation();
+                          video_v_l.startAnimation(leftanim);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
                     }
                 });
 
 
-                video_h_t.setAnimation(h_t);
-                video_h_b.setAnimation(h_b);
-                video_v_l.setAnimation(v_l);
-                video_v_r.setAnimation(v_r);
-               // video_v_r.setTranslationY(120);
+                //video_h_t.setAnimation(h_t);
+                //video_h_b.setAnimation(h_b);
+                //video_v_l.setAnimation(v_l);
+                //video_v_r.setAnimation(v_r);
+                //v_r.setStartOffset(1000);
 
                 video_h_t.setVisibility(VISIBLE);
                 video_h_b.setVisibility(VISIBLE);

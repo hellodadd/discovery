@@ -1,11 +1,15 @@
 package com.freeme.discovery.view;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -52,6 +56,8 @@ public class ContentTempleteView extends FrameLayout {
 
     private ImageView indline;
 
+    View animlayout;
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -70,8 +76,14 @@ public class ContentTempleteView extends FrameLayout {
         mPaint = new Paint();
     }
 
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
+
+        if(animlayout != null){
+            animlayout.setClipBounds(new Rect(0,20, 380,280));
+        }
+
     }
 
     public void setIconViewXY(int x, int y){
@@ -219,6 +231,12 @@ public class ContentTempleteView extends FrameLayout {
     public ImageView getIndline(){
         return indline;
     }
+
+    public void setAnimlayout(View view){
+        this.animlayout = view;
+    }
+
+
 
 
 

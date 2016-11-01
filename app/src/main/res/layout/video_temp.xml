@@ -21,24 +21,27 @@
                 android:src="@drawable/discovery_video_ani" />
 
             <RelativeLayout
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:layout_marginTop="10dp"
+                android:id="@+id/animLayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="6dp"
+                android:layout_marginLeft="10dp"
                 >
 
             <ImageView
                 android:id="@+id/video_h_ani_t"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:src="@drawable/discovery_video_horizontal" />
+                android:layout_marginTop="8dp"
+                android:src="@drawable/discovery_video_ani_h" />
 
             <ImageView
                 android:id="@+id/video_h_ani_b"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="86dp"
-                android:src="@drawable/discovery_video_horizontal" />
+                android:layout_marginTop="88dp"
+                android:layout_marginLeft="10dp"
+                android:src="@drawable/discovery_video_ani_h" />
 
             <ImageView
                 android:id="@+id/video_v_ani_l"
@@ -46,29 +49,29 @@
                 android:layout_height="match_parent"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="16dp"
-                android:src="@drawable/discovery_video_vertical" />
+                android:src="@drawable/discovery_video_ani_v" />
 
             <ImageView
                 android:id="@+id/video_v_ani_r"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_marginTop="60dp"
-                android:layout_marginLeft="106dp"
-                android:src="@drawable/discovery_video_vertical" />
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="116dp"
+                android:src="@drawable/discovery_video_ani_v" />
 
             <ImageView
                 android:id="@+id/icon_bg"
-                android:layout_width="100dp"
+                android:layout_width="108dp"
                 android:layout_height="100dp"
                 android:layout_marginLeft="6dp"
                 android:src="@drawable/discovery_video_bg"/>
 
             <ImageView
                 android:id="@+id/hot_app_icon"
-                android:layout_width="108dp"
-                android:layout_height="67dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginLeft="2dp"/>
+                android:layout_width="122dp"
+                android:layout_height="72dp"
+                android:layout_marginTop="14dp"
+                android:layout_marginLeft="-1dp"/>
 
             <ImageView
                 android:id="@+id/icon_button_bg"
@@ -100,16 +103,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/discovery_ind_line"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginLeft="22dp"/>
 
             <com.freeme.discovery.view.IndicatorTextView
                 android:id="@+id/status_textview"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="26dp"
+                android:layout_marginLeft="28dp"
                 android:textSize="9sp"
-                android:layout_marginTop="-6dp"
+                android:layout_marginTop="0dp"
                 android:textColor="#00fdfa"
                 android:text="xxxxxxxxx"
                 />
@@ -120,7 +123,8 @@
                 android:layout_height="wrap_content"
                 android:textColor="#00fdfa"
                 android:lines="2"
-                android:layout_marginTop="112dp"
+                android:textSize="@dimen/c_sp12"
+                android:layout_marginTop="98dp"
                 android:layout_marginLeft="4dp"
                 android:textStyle="italic"
                 />
