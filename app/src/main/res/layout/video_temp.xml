@@ -32,7 +32,7 @@
                 android:id="@+id/video_h_ani_t"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:src="@drawable/discovery_video_ani_h" />
 
             <ImageView
@@ -75,7 +75,7 @@
 
             <ImageView
                 android:id="@+id/icon_button_bg"
-                android:layout_width="101dp"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="5dp"
                 android:layout_marginTop="69dp"
@@ -93,7 +93,7 @@
                 android:id="@+id/icon_button_sex"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="90dp"
+                android:layout_marginLeft="100dp"
                 android:layout_marginTop="74dp"
                 android:src="@drawable/discovery_man"/>
             </RelativeLayout>

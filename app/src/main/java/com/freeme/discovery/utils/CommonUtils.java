@@ -12,7 +12,7 @@ import android.widget.TextView;
 public class CommonUtils {
 
     public static int RADIUS[] = {200, 270, 350, 430, 510};
-    public static int RADIUS_VIDEO[] = {200, 300, 400, 500, 510};
+    public static int RADIUS_VIDEO[] = {220, 320, 420, 520, 610};
 
     public static int VIDEO_LIMI = 40;
 

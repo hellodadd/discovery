@@ -1,6 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_name">探索</string>
+    <string name="app_search">应用</string>
+    <string name="video_search">视频</string>
+    <string name="app_status_discrible_male">一个男生在用</string>
+    <string name="app_status_discrible_female">一个女生在用</string>
+    <string name="discovery_radar_icon_corner_subscription">这是你关注的</string>
+    <string name="discovery_guide_title">欢迎开启探索发现之旅</string>
+    <string name="discovery_guide_start">启动</string>
+    <string name="discovery_guide_secret_gender_text">保密</string>
+    <string name="discovery_guide_male_gender_text">男</string>
+    <string name="discovery_guide_female_gender_text">女</string>
+    <string name="discovery_pref_select_your_gender">选择性别</string>
+    <string name="discovery_sample_app_description">正在使用的应用</string>
+    <string name="distance">距离</string>
+    <string name="distance_km">公里</string>
+    <string name="distance_mi">%d 米</string>
+    <string name="discovery_guide_meet_friends">遇见附近的朋友</string>
+    <string name="has_userd">%d 人在用</string>
+    <string name="has_users">人在用</string>
+
+    <string name="discovery_dialog_type_connection_error_btn_cancel">取消</string>
+    <string name="discovery_dialog_type_connection_error_btn_settings">设置</string>
+    <string name="discovery_dialog_type_connection_error_btn_try_again">重试</string>
+    <string name="discovery_dialog_type_connection_error_content">无法连接到服务器，请检查您的网络连接后重试</string>
+    <string name="discovery_dialog_type_connection_error_title">连接失败</string>
+    <string name="discovery_dialog_type_connection_retry">重试</string>
+    <string name="discovery_dialog_type_connection_error_msg">网络连接失败，请重试</string>
+
     <string name="software_share_text">Freeme是世界上最快，最美，最好用的桌面，推荐你也试试~ https://play.google.com/store/apps/details?id=com.freeme.freemelite.odm</string>
     <string name="software_share_titile">分享</string>
+
 </resources>

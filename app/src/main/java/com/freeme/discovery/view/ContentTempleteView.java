@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.freeme.discovery.R;
+import com.freeme.discovery.utils.CommonUtils;
 
 /**
  * Created by server on 16-10-17.
@@ -81,7 +82,13 @@ public class ContentTempleteView extends FrameLayout {
         super.onDraw(canvas);
 
         if(animlayout != null){
-            animlayout.setClipBounds(new Rect(0,20, 380,280));
+            if(CommonUtils.VIDEO_TYPE.equals(mainType)) {
+                animlayout.setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
+                        CommonUtils.dip2px(mContext, 120), CommonUtils.dip2px(mContext, 90)));
+            }else if(CommonUtils.SHOP_TYPE.equals(mainType)){
+                animlayout.setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
+                        CommonUtils.dip2px(mContext, 180), CommonUtils.dip2px(mContext, 90)));
+            }
         }
 
     }

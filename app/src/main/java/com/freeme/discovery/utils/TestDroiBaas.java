@@ -9,10 +9,14 @@ import com.droi.sdk.core.DroiUser;
 import com.freeme.discovery.bean.AppBean;
 import com.freeme.discovery.http.HttpInterface;
 import com.freeme.discovery.http.RequstApkListClient;
+import com.freeme.discovery.http.RequstCategoryApi;
+import com.freeme.discovery.http.TestShopApi;
+import com.freeme.discovery.http.TestShopService;
 import com.freeme.discovery.http.TestVideoApi;
 import com.freeme.discovery.http.TestVideoSerivce;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
+import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 
 import java.util.List;
@@ -141,6 +145,62 @@ public class TestDroiBaas {
             @Override
             public void result(Boolean aBoolean, DroiError droiError) {
                 Log.i(TAG, " ------ CreateAppType ------ " + droiError.getCode());
+            }
+        });
+    }
+
+    public static void requstTestShop() {
+        OkHttpClient.Builder okhttp = new OkHttpClient().newBuilder();
+        okhttp.connectTimeout(5, TimeUnit.SECONDS);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .client(okhttp.build())
+                .baseUrl("http://api.tianapi.com/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        TestShopService testShopService = retrofit.create(TestShopService.class);
+
+        Call<TestShopApi> getShopInfo = testShopService.getShopInfo("ca9d7457935cebee182d5dca9441ec79", 30);
+
+        getShopInfo.enqueue(new Callback<TestShopApi>() {
+            @Override
+            public void onResponse(Call<TestShopApi> call, Response<TestShopApi> response) {
+                Log.i("zwb", " ------ response = " + response.body().getNewslist().size());
+                if(response != null){
+                    List<TestShopApi.NewslistBean> newslistBeen = response.body().getNewslist();
+                    if(newslistBeen != null && newslistBeen.size() > 0){
+                        for(TestShopApi.NewslistBean news : newslistBeen) {
+                            DroiUser currentUser = DroiUser.getCurrentUser();
+                            // 设置权限为所有用户只读，拥有者可读可写
+                            DroiPermission permission = new DroiPermission();
+                            permission.setPublicReadPermission(true);
+                            permission.setUserReadPermission(currentUser.getObjectId(), true);
+                            permission.setUserWritePermission(currentUser.getObjectId(), true);
+
+                            ShopInfo shopInfo = new ShopInfo();
+                            shopInfo.setMainType("shop");
+                            shopInfo.setPrice((float) (10 + Math.random() * 50));
+                            shopInfo.setSname(news.getTitle());
+                            shopInfo.setUrl(news.getUrl());
+                            shopInfo.setIconurl(news.getPicUrl());
+
+                            shopInfo.setPermission(permission);
+
+                            shopInfo.saveInBackground(new DroiCallback<Boolean>() {
+                                @Override
+                                public void result(Boolean aBoolean, DroiError droiError) {
+                                    Log.i("zwb", " ------ droiError = " + droiError.isOk());
+                                }
+                            });
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<TestShopApi> call, Throwable t) {
+
             }
         });
     }

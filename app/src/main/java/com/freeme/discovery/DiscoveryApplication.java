@@ -6,6 +6,7 @@ import com.droi.sdk.core.Core;
 import com.droi.sdk.core.DroiObject;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
+import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 
 /**
@@ -22,5 +23,6 @@ public class DiscoveryApplication extends Application{
         DroiObject.registerCustomClass(AppType.class);
         DroiObject.registerCustomClass(AppInfo.class);
         DroiObject.registerCustomClass(VideoInfo.class);
+        DroiObject.registerCustomClass(ShopInfo.class);
     }
 }

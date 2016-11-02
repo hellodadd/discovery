@@ -30,6 +30,7 @@ import android.widget.TextView;
 import com.freeme.discovery.R;
 import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.models.AppInfo;
+import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.utils.CommonUtils;
 
@@ -203,12 +204,12 @@ public class RadarScene extends FrameLayout {
 
         final int childCount = getChildCount();
 
-        int startDisdance = CommonUtils.dip2px(mContext,50);
+        int startDisdance = CommonUtils.dip2px(mContext,40);
         for(int i = 0; i < 4; i++){
             disdanceView[i].layout(LcdWidth / 2 - CommonUtils.dip2px(mContext,20) , startDisdance,
-                    LcdWidth / 2 + CommonUtils.dip2px(mContext,100), startDisdance + CommonUtils.dip2px(mContext,50) );
+                    LcdWidth / 2 + CommonUtils.dip2px(mContext,100), startDisdance + CommonUtils.dip2px(mContext,20) );
 
-            startDisdance += CommonUtils.dip2px(mContext,100);
+            startDisdance += CommonUtils.dip2px(mContext,120);
         }
 
         mItemCount = 0;
@@ -226,7 +227,11 @@ public class RadarScene extends FrameLayout {
                         * Math.sin(Math.toRadians(radian)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                iconView.layout(l, t, l + CommonUtils.dip2px(mContext,140), t + CommonUtils.dip2px(mContext,140));
+                if(iconView.getMainType().equals(CommonUtils.SHOP_TYPE)) {
+                    iconView.layout(l, t, l + CommonUtils.dip2px(mContext, 190), t + CommonUtils.dip2px(mContext, 120));
+                }else{
+                    iconView.layout(l, t, l + CommonUtils.dip2px(mContext, 140), t + CommonUtils.dip2px(mContext, 140));
+                }
                 iconView.setIconViewXY(l, t);
 
 
@@ -245,7 +250,7 @@ public class RadarScene extends FrameLayout {
                         * Math.sin(Math.toRadians(radian)));
                 int l = LcdWidth / 2 + x;
                 int t = LcdHeight -y;
-                stardot.layout(l, t, l + 50, t + 50);
+                stardot.layout(l, t, l + 30, t + 30);
                 stardot.setOrginX(l);
                 stardot.setOrginY(t);
                 stardot.setLayouted(true);
@@ -296,8 +301,9 @@ public class RadarScene extends FrameLayout {
         mHandler.sendEmptyMessageDelayed(MSG_RADAR_SCAN_ANI, 3500L);
 
         mHandler.removeMessages(MSG_UPDATE_STATUS);
-        updateContentViewSataus(new Random().nextInt(5));
-        updateVideoTypeAttentionAni(new Random().nextInt(5));
+        updateContentViewSataus(new Random().nextInt(25));
+        updateVideoTypeAttentionAni(new Random().nextInt(25));
+        updateShopTypeAttentionAni(new Random().nextInt(25));
     }
 
     private void updateAngleDefault(){
@@ -499,7 +505,7 @@ public class RadarScene extends FrameLayout {
 
                 view.setUsed(used);
 
-                view.setAttentionType(new Random().nextInt(5));
+                view.setAttentionType(new Random().nextInt(15));
 
                 view.setUrl("http://m.zhuoyi.com/detail.php?apk_id="+appInfo.getDocid());
                 //*/
@@ -664,7 +670,7 @@ public class RadarScene extends FrameLayout {
 
                 view.setUsed(used);
 
-                view.setAttentionType(new Random().nextInt(5));
+                view.setAttentionType(new Random().nextInt(15));
 
                 view.setUrl(videoInfo.getUrl());
                 //*/
@@ -755,6 +761,156 @@ public class RadarScene extends FrameLayout {
         }
     }
 
+    public void updateShopData(ArrayList<ShopInfo> shopInfoList){
+        long delay = 0;
+        mapList.clear();
+        initMapList();
+        if(shopInfoList != null && shopInfoList.size() > 0){
+            for(ShopInfo shopInfo : shopInfoList){
+                String mainType = shopInfo.getMainType();
+
+                final ContentTempleteView view = (ContentTempleteView) LayoutInflater.from(mContext)
+                        .inflate(R.layout.shop_temp, null);
+
+                View animLayout = view.findViewById(R.id.animLayout);
+                if(animLayout != null){
+                    view.setAnimlayout(animLayout);
+                }
+
+                view.setMainType(mainType);
+
+                ImageView icon = (ImageView) view.findViewById(R.id.hot_app_icon);
+
+                mAsyncImageCache.displayImage(
+                        icon,310,123,
+                        new AsyncImageCache.NetworkImageGenerator(shopInfo.getIconurl(),
+                                shopInfo.getIconurl()), 0);
+
+                view.setTag("app");
+
+
+                int random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
+                int radian = (int) mapList.get(random);
+                while (radian == 1000){
+                    random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
+                    radian = (int) mapList.get(random);
+                }
+                mapList.set(random, 1000);
+
+                view.setRadian(radian);
+
+                int radius = 0;
+                int distance = 0;
+                long used;
+                if(random < RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[0]);
+                    distance = (int) (300 + Math.random()* 500);
+                }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[1]);
+                    distance = (int) (900 + Math.random()* 1100);
+                }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[2]);
+                    distance = (int) (2100 + Math.random()* 700);
+                }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[3]);
+                    distance = (int) (2900 + Math.random()*  1500);
+                }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[4]);
+                    distance = (int) (4500 + Math.random()* 2000);
+                }
+
+                used = 100;//appInfo.getDownloadnum();
+
+                view.setRadius(radius);
+
+                view.setDistance(distance);
+
+                view.setUsed(used);
+
+                view.setAttentionType(new Random().nextInt(15));
+
+                view.setUrl(shopInfo.getUrl());
+                //*/
+
+                TextView textView = (TextView)view.findViewById(R.id.hot_app_text);
+                textView.setText(shopInfo.getSname());
+
+                ImageView imageView = (ImageView)view.findViewById(R.id.animg);
+                imageView.setVisibility(GONE);
+                //*/
+
+                ImageView iconbg = (ImageView)view.findViewById(R.id.icon_bg);
+
+                view.setCircleAniImage(imageView);
+
+                int sex = new Random().nextInt(2);
+
+                view.setIconViewSex(sex);
+
+                if(sex == 0) {
+                    if (iconbg != null){
+                        //iconbg.setImageDrawable(mContext.getResources().getDrawable(R.drawable.discovery_radar_icon_bg_women));
+                    }
+                }
+
+                IndicatorTextView statusTextView = (IndicatorTextView)view.findViewById(R.id.status_textview);
+                statusTextView.setVisibility(GONE);
+                view.setIndicatorTextView(statusTextView);
+
+                if(mainType.equals(CommonUtils.SHOP_TYPE)) {
+                    ImageView videoh = (ImageView) view.findViewById(R.id.shop_h_ani_t);
+                    ImageView videoh_b = (ImageView) view.findViewById(R.id.shop_h_ani_b);
+                    ImageView videov = (ImageView) view.findViewById(R.id.shop_v_ani_l);
+                    ImageView videov_r = (ImageView) view.findViewById(R.id.shop_v_ani_r);
+
+                    ImageView indline = (ImageView)view.findViewById(R.id.discovery_ind_line);
+
+
+
+                    videoh.setVisibility(GONE);
+                    videoh_b.setVisibility(GONE);
+                    videov.setVisibility(GONE);
+                    videov_r.setVisibility(GONE);
+
+                    indline.setVisibility(GONE);
+
+                    view.setVideo_h_t(videoh);
+                    view.setVideo_h_b(videoh_b);
+                    view.setVideo_v_l(videov);
+                    view.setVideo_v_r(videov_r);
+                    view.setIndline(indline);
+
+                }
+
+                mContentTempleteView[count] = view;
+
+                view.setVisibility(GONE);
+
+                mHandler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        view.setVisibility(VISIBLE);
+                    }
+                }, delay);
+
+                delay += 200;
+
+                icon.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        onItemClickListener.onItemClick(view.getUrl());
+                    }
+                });
+
+                addView(view, new FrameLayout.LayoutParams(-2, -2));
+
+                count += 1;
+
+            }
+        }
+    }
+
+
     public void clearData(){
         for(int i = 0; i < mContentTempleteView.length; i++) {
            removeView(mContentTempleteView[i]);
@@ -797,7 +953,8 @@ public class RadarScene extends FrameLayout {
         for(int i = 0; i < mContentTempleteView.length; i++) {
             final ContentTempleteView view = mContentTempleteView[i];
             if (view != null && view.getAttentionType() == type
-                    && !view.getMainType().equals(CommonUtils.VIDEO_TYPE)) {
+                    && !view.getMainType().equals(CommonUtils.VIDEO_TYPE)
+                    && !view.getMainType().equals(CommonUtils.SHOP_TYPE)) {
                 //Log.i("ded", "   i = ----- " + i + "  type  ----- " + type);
                 if (view.getIshowattention()) {
                     return;
@@ -880,7 +1037,11 @@ public class RadarScene extends FrameLayout {
                     statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
                 } else if (randomstatus > 30 && randomstatus < 40) {
                     String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
-                    statusView.setText(used);
+                    if(view.getUsed() > 10000){
+                        statusView.setText("10000+" + mContext.getResources().getString(R.string.has_users));
+                    }else{
+                        statusView.setText(used);
+                    }
                 } else if (randomstatus > 20 && randomstatus < 30) {
                     String distance;
                     if (view.getDistance() > 1000) {
@@ -943,35 +1104,91 @@ public class RadarScene extends FrameLayout {
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-                           Log.i("zwb","  repeat ----");
+                           //Log.i("zwb","  repeat ----");
                     }
                 });
 
-                final TranslateAnimation topanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, -1,
-                        TranslateAnimation.RELATIVE_TO_SELF, 1,
-                        TranslateAnimation.RELATIVE_TO_SELF, 0, TranslateAnimation.RELATIVE_TO_SELF, 0);
-                topanim.setDuration(500);
-                //inAnim.setRepeatCount(10);
 
-                final TranslateAnimation rightanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 0,
-                        TranslateAnimation.RELATIVE_TO_SELF, 0,
-                        TranslateAnimation.RELATIVE_TO_SELF, -1, TranslateAnimation.RELATIVE_TO_SELF, 1);
-                rightanim.setDuration(500);
+                video_h_t.setAnimation(h_t);
+                video_h_b.setAnimation(h_b);
+                video_v_l.setAnimation(v_l);
+                video_v_r.setAnimation(v_r);
 
-                final TranslateAnimation bottomanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 1,
-                        TranslateAnimation.RELATIVE_TO_SELF, -1,
-                        TranslateAnimation.RELATIVE_TO_SELF, 0, TranslateAnimation.RELATIVE_TO_SELF, 0);
-                bottomanim.setDuration(500);
+                video_h_t.setVisibility(VISIBLE);
+                video_h_b.setVisibility(VISIBLE);
+                video_v_l.setVisibility(VISIBLE);
+                video_v_r.setVisibility(VISIBLE);
+            }
+        }
+    }
 
-                final TranslateAnimation leftanim = new TranslateAnimation(TranslateAnimation.RELATIVE_TO_SELF, 0,
-                        TranslateAnimation.RELATIVE_TO_SELF, 0,
-                        TranslateAnimation.RELATIVE_TO_SELF, 1, TranslateAnimation.RELATIVE_TO_SELF, -1);
-                leftanim.setDuration(500);
+    private void updateShopTypeAttentionAni(int type){
+        int randomstatus = (int) (10 + Math.random()* 50);
 
-                video_h_t.clearAnimation();
-                video_h_t.startAnimation(topanim);
+        for(int i = 0; i < mContentTempleteView.length; i++) {
+            final ContentTempleteView view = mContentTempleteView[i];
+            if(view != null && view.getAttentionType() == type
+                    && view.getMainType().equals(CommonUtils.SHOP_TYPE)) {
+                final ImageView video_h_t = view.getVideo_h_t();
+                final ImageView video_h_b = view.getVideo_h_b();
+                final ImageView video_v_l = view.getVideo_v_l();
+                final ImageView video_v_r = view.getVideo_v_r();
 
-                topanim.setAnimationListener(new Animation.AnimationListener() {
+                final IndicatorTextView statusView = view.getIndicatorTextView();
+                final int sex = view.getIconViewSex();
+                if (randomstatus > 40) {
+                    statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
+                } else if (randomstatus > 30 && randomstatus < 40) {
+                    String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
+                    if(view.getUsed() > 10000){
+                        statusView.setText("10000+" + mContext.getResources().getString(R.string.has_users));
+                    }else{
+                        statusView.setText(used);
+                    }
+                } else if (randomstatus > 20 && randomstatus < 30) {
+                    String distance;
+                    if (view.getDistance() > 1000) {
+                        float dis = (float) view.getDistance() / 1000;
+                        DecimalFormat decimalFormat = new DecimalFormat(".00");
+                        distance = decimalFormat.format(dis);
+                        statusView.setText(distance + mContext.getResources().getString(R.string.distance_km));
+                    } else {
+                        distance = String.format(mContext.getResources().getString(R.string.distance_mi),
+                                view.getDistance());
+                        statusView.setText(distance);
+                    }
+                } else {
+                    statusView.setText(sex == 0 ? mContext.getResources().getString(R.string.app_status_discrible_female) :
+                            mContext.getResources().getString(R.string.app_status_discrible_male));
+                }
+
+                statusView.setSingleLine();
+                statusView.forceLayout();
+                statusView.setVisibility(VISIBLE);
+
+                final ImageView indline = view.getIndline();
+                indline.setVisibility(VISIBLE);
+
+                LinearInterpolator lin = new LinearInterpolator();
+
+                Animation h_t = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h);
+
+
+                h_t.setInterpolator(lin);
+
+                Animation h_b = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_h_b);
+
+                h_b.setInterpolator(lin);
+
+                Animation v_l = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v);
+
+                v_l.setInterpolator(lin);
+
+                Animation v_r = AnimationUtils.loadAnimation(mContext, R.anim.discovery_video_v_r);
+
+                v_r.setInterpolator(lin);
+                //v_r.setRepeatMode(Animation.REVERSE);
+                v_r.setAnimationListener(new Animation.AnimationListener() {
                     @Override
                     public void onAnimationStart(Animation animation) {
 
@@ -979,57 +1196,26 @@ public class RadarScene extends FrameLayout {
 
                     @Override
                     public void onAnimationEnd(Animation animation) {
-                        video_v_r.clearAnimation();
-                        video_v_r.startAnimation(rightanim);
+                        video_h_t.setVisibility(GONE);
+                        video_h_b.setVisibility(GONE);
+                        video_v_l.setVisibility(GONE);
+                        video_v_r.setVisibility(GONE);
+
+                        statusView.setVisibility(GONE);
+                        indline.setVisibility(GONE);
                     }
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-                rightanim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        video_h_b.clearAnimation();
-                        video_h_b.startAnimation(bottomanim);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
-                    }
-                });
-
-                bottomanim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                          video_v_l.clearAnimation();
-                          video_v_l.startAnimation(leftanim);
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
-
+                        Log.i("zwb","  repeat ----");
                     }
                 });
 
 
-                //video_h_t.setAnimation(h_t);
-                //video_h_b.setAnimation(h_b);
-                //video_v_l.setAnimation(v_l);
-                //video_v_r.setAnimation(v_r);
+                video_h_t.setAnimation(h_t);
+                video_h_b.setAnimation(h_b);
+                video_v_l.setAnimation(v_l);
+                video_v_r.setAnimation(v_r);
                 //v_r.setStartOffset(1000);
 
                 video_h_t.setVisibility(VISIBLE);

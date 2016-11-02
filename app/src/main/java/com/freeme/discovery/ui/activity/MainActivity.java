@@ -1,6 +1,7 @@
 package com.freeme.discovery.ui.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -27,6 +28,7 @@ import com.freeme.discovery.http.RequstApkListClient;
 import com.freeme.discovery.http.RequstCategoryClient;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
+import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.utils.CommonUtils;
@@ -164,6 +166,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //TestDroiBaas.requstTestVieo();
 
+        //TestDroiBaas.requstTestShop();
+
     }
 
     protected void onResume() {
@@ -246,6 +250,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if(mainType.equals(CommonUtils.VIDEO_TYPE)){
             fetchVideoInfo(mainType);
             return;
+        }else if(mainType.equals(CommonUtils.SHOP_TYPE)){
+            fetchShopInfo(mainType);
+            return;
         }
         DroiCondition condition = DroiCondition.cond("mainType",
                 DroiCondition.Type.EQ, mainType);
@@ -288,6 +295,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
                             radarScene.updateVideoData((ArrayList<VideoInfo>) list);
+                        }
+                    }
+                }else{
+                    showNetConnectRetry();
+                }
+                isRefreshing = false;
+            }
+        });
+    }
+
+    private void fetchShopInfo(String mainType){
+        DroiCondition condition = DroiCondition.cond("mainType",
+                DroiCondition.Type.EQ, mainType);
+        DroiQuery droiQuery = DroiQuery.Builder.newBuilder()
+                .limit(40)
+                .query(ShopInfo.class)
+                .where(condition)
+                .build();
+        droiQuery.runQueryInBackground(new DroiQueryCallback<ShopInfo>() {
+            @Override
+            public void result(List<ShopInfo> list, DroiError droiError) {
+                avLoadingIndicatorView.hide();
+                if(droiError.isOk()){
+                    if(list != null && list.size() > 0){
+                        if(radarScene != null){
+                            radarScene.updateShopData((ArrayList<ShopInfo>) list);
                         }
                     }
                 }else{
@@ -358,6 +391,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showNetConnectError() {
+        /*//
         LayoutInflater inflater = getLayoutInflater();
 
         View dialog = inflater.inflate(R.layout.discovery_connect_error_dialog, null);
@@ -385,14 +419,59 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         alertDialog.show();
+        //*/
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);//, R.style.CoustomDialog);
+        builder.setTitle(getResources().getString(R.string.discovery_dialog_type_connection_error_title));
+        builder.setMessage(getResources().getString(R.string.discovery_dialog_type_connection_error_content));
+        builder.setNegativeButton(getResources().
+                getString(R.string.discovery_dialog_type_connection_error_btn_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //dialog.cancel();
+                finish();
+            }
+        });
+        builder.setPositiveButton(getResources().getText(R.string.discovery_dialog_type_connection_error_btn_settings),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        startActivity(new Intent("android.settings.SETTINGS"));
+                        finish();
+                    }
+                });
+        builder.show();
     }
 
     private void showNetConnectRetry(){
         LayoutInflater inflater = getLayoutInflater();
-        View view = inflater.inflate(R.layout.discovery_retry, null);
+        //View view = inflater.inflate(R.layout.discovery_retry, null);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CoustomDialog);
-        builder.setView(view);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);//, R.style.CoustomDialog);
+        builder.setTitle(getResources().getString(R.string.discovery_dialog_type_connection_error_title));
+        builder.setMessage(getResources().getString(R.string.discovery_dialog_type_connection_error_msg));
+        builder.setNegativeButton(getResources().
+                getString(R.string.discovery_dialog_type_connection_error_btn_cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                //dialog.cancel();
+                finish();
+            }
+        });
+        builder.setPositiveButton(getResources().getText(R.string.discovery_dialog_type_connection_retry),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(appTypeList.isEmpty()){
+                            fetchAppTypeData();
+                        }else{
+                            refreshData(mCurentMainType);
+                        }
+                    }
+                });
+        builder.show();
+
+
+        /*builder.setView(view);
 
         final AlertDialog dialog = builder.create();
 
@@ -417,8 +496,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 dialog.cancel();
             }
         });
-
         dialog.show();
+        */
     }
 
     @Override
