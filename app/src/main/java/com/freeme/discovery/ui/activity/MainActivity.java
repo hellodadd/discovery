@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DroiCondition condition = DroiCondition.cond("mainType",
                 DroiCondition.Type.EQ, mainType);
         DroiQuery droiQuery = DroiQuery.Builder.newBuilder()
-                .limit(40)
+                .limit(CommonUtils.VIDEO_LIMI)
                 .query(VideoInfo.class)
                 .where(condition)
                 .build();
@@ -309,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         DroiCondition condition = DroiCondition.cond("mainType",
                 DroiCondition.Type.EQ, mainType);
         DroiQuery droiQuery = DroiQuery.Builder.newBuilder()
-                .limit(40)
+                .limit(CommonUtils.SHOP_LIMI)
                 .query(ShopInfo.class)
                 .where(condition)
                 .build();

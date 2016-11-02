@@ -789,10 +789,10 @@ public class RadarScene extends FrameLayout {
                 view.setTag("app");
 
 
-                int random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
+                int random = (int) (Math.random()* CommonUtils.SHOP_LIMI);
                 int radian = (int) mapList.get(random);
                 while (radian == 1000){
-                    random = (int) (Math.random()* CommonUtils.VIDEO_LIMI);
+                    random = (int) (Math.random()* CommonUtils.SHOP_LIMI);
                     radian = (int) mapList.get(random);
                 }
                 mapList.set(random, 1000);
@@ -803,19 +803,19 @@ public class RadarScene extends FrameLayout {
                 int distance = 0;
                 long used;
                 if(random < RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[0]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_SHOP[0]);
                     distance = (int) (300 + Math.random()* 500);
                 }else if(random > RADIAN_0 - 1 && random < RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[1]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_SHOP[1]);
                     distance = (int) (900 + Math.random()* 1100);
                 }else if(random > RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[2]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_SHOP[2]);
                     distance = (int) (2100 + Math.random()* 700);
                 }else if(random > RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[3]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_SHOP[3]);
                     distance = (int) (2900 + Math.random()*  1500);
                 }else if(random > RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0 - 1 && random < RADIAN_4 + RADIAN_3 + RADIAN_2 + RADIAN_1 + RADIAN_0){
-                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_VIDEO[4]);
+                    radius = CommonUtils.dip2px(mContext,CommonUtils.RADIUS_SHOP[4]);
                     distance = (int) (4500 + Math.random()* 2000);
                 }
 
