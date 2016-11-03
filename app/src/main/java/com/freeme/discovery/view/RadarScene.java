@@ -121,7 +121,7 @@ public class RadarScene extends FrameLayout {
         this(context,attrs,0);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    //@TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public RadarScene(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
@@ -139,7 +139,8 @@ public class RadarScene extends FrameLayout {
 
         mBottomCicyleView = new ImageView(context);
         mBottomCicyleView.setScaleType(ImageView.ScaleType.FIT_XY);
-        mBottomCicyleView.setBackground(context.getDrawable(R.drawable.discovery_radar_center_meter));
+        //mBottomCicyleView.setBackground(context.getDrawable(R.drawable.discovery_radar_center_meter));
+        mBottomCicyleView.setBackgroundResource(R.drawable.discovery_radar_center_meter);
         int width = getDefaultWidth()/2 + 20;
         addView(mBottomCicyleView, 0, new FrameLayout.LayoutParams(width, width, 81));
         mBottomCicyleView.setPivotX(width / 2.0F);
@@ -627,7 +628,7 @@ public class RadarScene extends FrameLayout {
                 mAsyncImageCache.displayImage(
                         icon,214,144,
                         new AsyncImageCache.NetworkImageGenerator(videoInfo.getIconurl(),
-                                videoInfo.getIconurl()), 10);
+                                videoInfo.getIconurl()), 4);
 
                 view.setTag("app");
 
@@ -966,7 +967,11 @@ public class RadarScene extends FrameLayout {
                     statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
                 } else if (randomstatus > 30 && randomstatus < 40) {
                     String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
-                    statusView.setText(used);
+                    if(view.getUsed() > 10000){
+                        statusView.setText("10000+" + mContext.getResources().getString(R.string.has_users));
+                    }else{
+                        statusView.setText(used);
+                    }
                 } else if (randomstatus > 20 && randomstatus < 30) {
                     String distance;
                     if (view.getDistance() > 1000) {
@@ -1108,16 +1113,25 @@ public class RadarScene extends FrameLayout {
                     }
                 });
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                    video_h_t.setAnimation(h_t);
+                    video_h_b.setAnimation(h_b);
+                    video_v_l.setAnimation(v_l);
+                    video_v_r.setAnimation(v_r);
 
-                video_h_t.setAnimation(h_t);
-                video_h_b.setAnimation(h_b);
-                video_v_l.setAnimation(v_l);
-                video_v_r.setAnimation(v_r);
-
-                video_h_t.setVisibility(VISIBLE);
-                video_h_b.setVisibility(VISIBLE);
-                video_v_l.setVisibility(VISIBLE);
-                video_v_r.setVisibility(VISIBLE);
+                    video_h_t.setVisibility(VISIBLE);
+                    video_h_b.setVisibility(VISIBLE);
+                    video_v_l.setVisibility(VISIBLE);
+                    video_v_r.setVisibility(VISIBLE);
+                }else{
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            statusView.setVisibility(GONE);
+                            indline.setVisibility(GONE);
+                        }
+                    },3000);
+                }
             }
         }
     }
@@ -1140,9 +1154,9 @@ public class RadarScene extends FrameLayout {
                     statusView.setText(mContext.getResources().getString(R.string.discovery_radar_icon_corner_subscription));
                 } else if (randomstatus > 30 && randomstatus < 40) {
                     String used = String.format(mContext.getResources().getString(R.string.has_userd), view.getUsed());
-                    if(view.getUsed() > 10000){
+                    if (view.getUsed() > 10000) {
                         statusView.setText("10000+" + mContext.getResources().getString(R.string.has_users));
-                    }else{
+                    } else {
                         statusView.setText(used);
                     }
                 } else if (randomstatus > 20 && randomstatus < 30) {
@@ -1207,21 +1221,29 @@ public class RadarScene extends FrameLayout {
 
                     @Override
                     public void onAnimationRepeat(Animation animation) {
-                        Log.i("zwb","  repeat ----");
+                        Log.i("zwb", "  repeat ----");
                     }
                 });
 
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2){
+                    video_h_t.setAnimation(h_t);
+                    video_h_b.setAnimation(h_b);
+                    video_v_l.setAnimation(v_l);
+                    video_v_r.setAnimation(v_r);
 
-                video_h_t.setAnimation(h_t);
-                video_h_b.setAnimation(h_b);
-                video_v_l.setAnimation(v_l);
-                video_v_r.setAnimation(v_r);
-                //v_r.setStartOffset(1000);
-
-                video_h_t.setVisibility(VISIBLE);
-                video_h_b.setVisibility(VISIBLE);
-                video_v_l.setVisibility(VISIBLE);
-                video_v_r.setVisibility(VISIBLE);
+                    video_h_t.setVisibility(VISIBLE);
+                    video_h_b.setVisibility(VISIBLE);
+                    video_v_l.setVisibility(VISIBLE);
+                    video_v_r.setVisibility(VISIBLE);
+                }else{
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            statusView.setVisibility(GONE);
+                            indline.setVisibility(GONE);
+                        }
+                    },3000);
+                }
             }
         }
     }

@@ -239,10 +239,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         getResources().getColor(R.color.discovery_shadow));
                 RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(-2, -2);
                 mCircleMenu.addView(menuItemView, lp);
-                mCircleMenu.setmFocusIndex(appTypeList.size() / 2);
+                mCircleMenu.setmFocusIndex(CommonUtils.DEFAULT_MENU);
             }
 
-            fetchAppInfo(appTypeList.get(appTypeList.size() / 2).getMainType());
+            fetchAppInfo(appTypeList.get(CommonUtils.DEFAULT_MENU).getMainType());
         }
     }
 

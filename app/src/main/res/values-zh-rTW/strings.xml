@@ -18,7 +18,7 @@
     <string name="distance_km">公里</string>
     <string name="distance_mi">%d 米</string>
     <string name="discovery_guide_meet_friends">遇见附近的朋友</string>
-    <string name="has_userd">%d 人在用</string>
+    <string name="has_userd">%d人在用</string>
     <string name="has_users">人在用</string>
 
     <string name="discovery_dialog_type_connection_error_btn_cancel">取消</string>

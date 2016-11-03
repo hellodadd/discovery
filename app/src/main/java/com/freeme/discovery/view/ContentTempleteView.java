@@ -59,6 +59,9 @@ public class ContentTempleteView extends FrameLayout {
 
     View animlayout;
 
+    private Rect mClipBounds;
+
+
     public ContentTempleteView(Context context) {
         this(context, null, 0);
     }
@@ -77,16 +80,16 @@ public class ContentTempleteView extends FrameLayout {
         mPaint = new Paint();
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+
     public void onDraw(Canvas canvas){
         super.onDraw(canvas);
 
-        if(animlayout != null){
+        if(animlayout != null && animlayout instanceof EnhanceView){
             if(CommonUtils.VIDEO_TYPE.equals(mainType)) {
-                animlayout.setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
+                ((EnhanceView)animlayout).setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
                         CommonUtils.dip2px(mContext, 120), CommonUtils.dip2px(mContext, 90)));
             }else if(CommonUtils.SHOP_TYPE.equals(mainType)){
-                animlayout.setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
+                ((EnhanceView)animlayout).setClipBounds(new Rect(0, CommonUtils.dip2px(mContext, 10),
                         CommonUtils.dip2px(mContext, 180), CommonUtils.dip2px(mContext, 90)));
             }
         }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.freeme.discovery">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.freeme.discovery">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -23,7 +24,8 @@
             android:name="com.droi.sdk.channel_name"
             android:value="1a6850e14a21a35162c53742" />
 
-        <activity android:name=".ui.activity.MainActivity">
+        <activity android:name=".ui.activity.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -16,7 +16,7 @@
     <string name="distance_km">km</string>
     <string name="distance_mi">%d m</string>
     <string name="discovery_guide_meet_friends">Meet friends nearby</string>
-    <string name="has_userd">%d Users</string>
+    <string name="has_userd">%dUsers</string>
     <string name="has_users">Users</string>
 
     <string name="discovery_dialog_type_connection_error_btn_cancel">CANCEL</string>

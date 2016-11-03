@@ -13,13 +13,15 @@ public class CommonUtils {
 
     public static int RADIUS[] = {200, 270, 350, 430, 510};
     public static int RADIUS_VIDEO[] = {220, 320, 420, 520, 610};
-    public static int RADIUS_SHOP[] = {280, 400, 500, 550, 610};
+    public static int RADIUS_SHOP[] = {280, 400, 520, 600, 610};
 
     public static int VIDEO_LIMI = 40;
     public static int SHOP_LIMI = 20;
 
     public static String VIDEO_TYPE = "video";
     public static String SHOP_TYPE = "shop";
+
+    public static int DEFAULT_MENU = 0;
 
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
