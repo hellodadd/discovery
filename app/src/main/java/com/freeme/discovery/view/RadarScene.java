@@ -32,6 +32,8 @@ import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
+import com.freeme.discovery.ui.adapter.BaseAdapter;
+import com.freeme.discovery.ui.adapter.VideoAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 
 import java.text.DecimalFormat;
@@ -1269,5 +1271,12 @@ public class RadarScene extends FrameLayout {
 
     public abstract interface onItemClickListener{
         public abstract void onItemClick(String url);
+    }
+
+
+    public void setAdapter(BaseAdapter adapter){
+        if(adapter instanceof VideoAdapter){
+            Log.i("dxee", "  is videoAdapter");
+        }
     }
 }

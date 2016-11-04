@@ -31,6 +31,7 @@ import com.freeme.discovery.models.AppType;
 import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.ui.adapter.MyAdapter;
+import com.freeme.discovery.ui.adapter.VideoAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.TestDroiBaas;
 import com.freeme.discovery.view.CircleMenu;
@@ -295,6 +296,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
+                            VideoAdapter videoAdapter = new VideoAdapter(MainActivity.this);
+                            videoAdapter.setInfoList((ArrayList<VideoInfo>) list);
+                            radarScene.setAdapter(videoAdapter);
                             radarScene.updateVideoData((ArrayList<VideoInfo>) list);
                         }
                     }
