@@ -247,6 +247,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void fetchAppInfo(String mainType){
+        mCurentMainType = mainType;
         if(mainType.equals(CommonUtils.VIDEO_TYPE)){
             fetchVideoInfo(mainType);
             return;
