@@ -7,15 +7,35 @@ android {
     defaultConfig {
         applicationId "com.freeme.discovery"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
+    signingConfigs {
+        releaseConfig {
+            keyAlias 'freemeos.launcher.freemeos.keystore'
+            keyPassword 'droi.freemeos.launcher.freemeos'
+            storeFile file('freemeos.launcher.freemeos.keystore')
+            storePassword 'droi.freemeos.launcher.freemeos'
+        }
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.releaseConfig
+            applicationVariants.all { variant ->
+                variant.outputs.each { output ->
+                    def outputFile = output.outputFile
+                    if (outputFile != null && outputFile.name.endsWith('.apk') && outputFile.name.contains('release')) {
+                        def fileName = "FreemeDiscovery_${versionName}_${versionCode}.apk"
+                        output.outputFile = new File(outputFile.parent, fileName)
+                    }
+                }
+            }
         }
     }
 
