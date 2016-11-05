@@ -15,6 +15,7 @@ public class CommonUtils {
     public static int RADIUS_VIDEO[] = {220, 320, 420, 520, 610};
     public static int RADIUS_SHOP[] = {280, 400, 520, 600, 610};
 
+    public static int APP_LIMI = 60;
     public static int VIDEO_LIMI = 40;
     public static int SHOP_LIMI = 20;
 

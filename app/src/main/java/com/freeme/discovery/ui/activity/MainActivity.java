@@ -30,7 +30,9 @@ import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
 import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
+import com.freeme.discovery.ui.adapter.AppAdapter;
 import com.freeme.discovery.ui.adapter.MyAdapter;
+import com.freeme.discovery.ui.adapter.ShopAdapter;
 import com.freeme.discovery.ui.adapter.VideoAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 import com.freeme.discovery.utils.TestDroiBaas;
@@ -56,30 +58,18 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
         RadarScene.onItemClickListener {
     private final static String TAG = "MainActivity";
-
     private final static String KEY_FIRST = "firststart";
-
     private RadarScene radarScene;
-
     private CircleMenu mCircleMenu;
-
     ArrayList<AppType> appTypeList;
-
     private String mCurentMainType;
-
-
     private ImageView mBack;
-
     private AVLoadingIndicatorView avLoadingIndicatorView;
-
     private ViewStub mGuideViewStub;
     private TextView mGuideStart;
-
-
     private ImageView mShareButton;
     private ImageView mRefreshButton;
     private ImageView mScanStopButton;
-    private ImageView mFavriteButton;
     private boolean mBooleanRadarScan;
 
     private boolean isRefreshing;
@@ -108,16 +98,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         setContentView(R.layout.activity_main);
 
-        avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.discovery_loading_layout);
-        avLoadingIndicatorView.show();
-
         if (!CommonUtils.isNetworkConnected(this)) {
             showNetConnectError();
         }
 
+        initView();
+
+        initAppType();
+
+        //TestDroiBaas.CreateAppType();
+        //TestDroiBaas.requstApkInfo(1,40, 173);
+        //TestDroiBaas.requstTestVieo();
+        //TestDroiBaas.requstTestShop();
+
+    }
+
+    private void initView(){
+        avLoadingIndicatorView = (AVLoadingIndicatorView) findViewById(R.id.discovery_loading_layout);
+        avLoadingIndicatorView.show();
         SharedPreferences sp = this.getSharedPreferences("discovery", MODE_PRIVATE);
         boolean firststart = sp.getBoolean(KEY_FIRST, true);
-
         mGuideViewStub = (ViewStub) findViewById(R.id.discovery_guide);
         mGuideViewStub.inflate();
         mGuideStart = (TextView) findViewById(R.id.discovery_rule_start);
@@ -149,9 +149,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
 
         mCircleMenu = (CircleMenu) findViewById(R.id.discovery_circlemenu);
-        mCircleMenu.setMenuBottomMargin(dip2px(this, 20.0f));
-        mCircleMenu.setOperationHeight(dip2px(this, 56.0f));
-        mCircleMenu.setItemMargin(dip2px(this, 45.0f));
+        mCircleMenu.setMenuBottomMargin(CommonUtils.dip2px(this, 20.0f));
+        mCircleMenu.setOperationHeight(CommonUtils.dip2px(this, 56.0f));
+        mCircleMenu.setItemMargin(CommonUtils.dip2px(this, 45.0f));
         mCircleMenu.setMenuItemClickListener(new CircleMenu.MenuItemClickListener() {
             @Override
             public void menuItemClick(String mainType) {
@@ -159,16 +159,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 refreshData(mainType);
             }
         });
-
-        initAppType();
-
-        //TestDroiBaas.CreateAppType();
-        //TestDroiBaas.requstApkInfo(1,40, 173);
-
-        //TestDroiBaas.requstTestVieo();
-
-        //TestDroiBaas.requstTestShop();
-
     }
 
     protected void onResume() {
@@ -205,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void result(List<AppType> list, DroiError droiError) {
                 Log.i(TAG, " fetchAppTypeData getcode = " + droiError.getCode());
-                //avLoadingIndicatorView.hide();
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         Log.i(TAG, " list === " + list.toString());
@@ -270,7 +259,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
-                            radarScene.updateData((ArrayList<AppInfo>) list);
+                            AppAdapter appAdapter = new AppAdapter(MainActivity.this);
+                            appAdapter.setInfoList((ArrayList<AppInfo>) list);
+                            radarScene.setAdapter(appAdapter);
                         }
                     }
                 }else{
@@ -299,7 +290,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             VideoAdapter videoAdapter = new VideoAdapter(MainActivity.this);
                             videoAdapter.setInfoList((ArrayList<VideoInfo>) list);
                             radarScene.setAdapter(videoAdapter);
-                            radarScene.updateVideoData((ArrayList<VideoInfo>) list);
                         }
                     }
                 }else{
@@ -325,7 +315,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if(droiError.isOk()){
                     if(list != null && list.size() > 0){
                         if(radarScene != null){
-                            radarScene.updateShopData((ArrayList<ShopInfo>) list);
+                            ShopAdapter shopAdapter = new ShopAdapter(MainActivity.this);
+                            shopAdapter.setInfoList((ArrayList<ShopInfo>) list);
+                            radarScene.setAdapter(shopAdapter);
                         }
                     }
                 }else{
@@ -337,18 +329,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void refreshData(String mainType) {
-        //Log.i(TAG, "refres ------ ");
         avLoadingIndicatorView.setVisibility(View.VISIBLE);
         radarScene.clearData();
         if(!isRefreshing) {
             isRefreshing = true;
             fetchAppInfo(mainType);
         }
-    }
-
-    public int dip2px(Context context, float dpValue) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int) (dpValue * scale + 0.5f);
     }
 
     private void shareApp() {
@@ -396,35 +382,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showNetConnectError() {
-        /*//
-        LayoutInflater inflater = getLayoutInflater();
-
-        View dialog = inflater.inflate(R.layout.discovery_connect_error_dialog, null);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CoustomDialog);
-        builder.setView(dialog);
-        final AlertDialog alertDialog = builder.create();
-
-        TextView cancleButton = (TextView) dialog.findViewById(R.id.connect_setting_cancel);
-        cancleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.cancel();
-                finish();
-            }
-        });
-
-        Button setButton = (Button) dialog.findViewById(R.id.connect_setting_button);
-        setButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent("android.settings.SETTINGS"));
-                finish();
-            }
-        });
-
-        alertDialog.show();
-        //*/
         AlertDialog.Builder builder = new AlertDialog.Builder(this);//, R.style.CoustomDialog);
         builder.setTitle(getResources().getString(R.string.discovery_dialog_type_connection_error_title));
         builder.setMessage(getResources().getString(R.string.discovery_dialog_type_connection_error_content));
@@ -432,7 +389,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 getString(R.string.discovery_dialog_type_connection_error_btn_cancel), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //dialog.cancel();
                 finish();
             }
         });
@@ -448,17 +404,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void showNetConnectRetry(){
-        LayoutInflater inflater = getLayoutInflater();
-        //View view = inflater.inflate(R.layout.discovery_retry, null);
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);//, R.style.CoustomDialog);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(getResources().getString(R.string.discovery_dialog_type_connection_error_title));
         builder.setMessage(getResources().getString(R.string.discovery_dialog_type_connection_error_msg));
         builder.setNegativeButton(getResources().
-                getString(R.string.discovery_dialog_type_connection_error_btn_cancel), new DialogInterface.OnClickListener() {
+                getString(R.string.discovery_dialog_type_connection_error_btn_cancel),
+                new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                //dialog.cancel();
                 finish();
             }
         });
@@ -475,34 +428,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 });
         builder.show();
 
-
-        /*builder.setView(view);
-
-        final AlertDialog dialog = builder.create();
-
-        TextView cancleButton = (TextView) view.findViewById(R.id.connect_cancel);
-        cancleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-                finish();
-            }
-        });
-
-        Button retryBtn = (Button) view.findViewById(R.id.connect_retry_button);
-        retryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(appTypeList.isEmpty()){
-                    fetchAppTypeData();
-                }else{
-                    refreshData(mCurentMainType);
-                }
-                dialog.cancel();
-            }
-        });
-        dialog.show();
-        */
     }
 
     @Override
