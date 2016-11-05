@@ -1,6 +1,5 @@
 package com.freeme.discovery.ui.activity;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,11 +8,9 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewStub;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,19 +20,14 @@ import com.droi.sdk.core.DroiCondition;
 import com.droi.sdk.core.DroiQuery;
 import com.droi.sdk.core.DroiQueryCallback;
 import com.freeme.discovery.R;
-import com.freeme.discovery.bean.CategoryBean;
-import com.freeme.discovery.http.RequstApkListClient;
-import com.freeme.discovery.http.RequstCategoryClient;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.AppType;
 import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
 import com.freeme.discovery.ui.adapter.AppAdapter;
-import com.freeme.discovery.ui.adapter.MyAdapter;
 import com.freeme.discovery.ui.adapter.ShopAdapter;
 import com.freeme.discovery.ui.adapter.VideoAdapter;
 import com.freeme.discovery.utils.CommonUtils;
-import com.freeme.discovery.utils.TestDroiBaas;
 import com.freeme.discovery.view.CircleMenu;
 import com.freeme.discovery.view.CircleMenuItemView;
 import com.freeme.discovery.view.RadarScene;
@@ -50,9 +42,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import retrofit2.Call;
-import retrofit2.Response;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,
@@ -73,22 +62,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private boolean mBooleanRadarScan;
 
     private boolean isRefreshing;
-
-    private static final int CORE_POOL_SIZE = 5;
-    private static final int MAXIMUM_POOL_SIZE = 128;
-    private static final int KEEP_ALIVE = 1;
-
-    private static final ThreadFactory sThreadFactory = new ThreadFactory() {
-        private final AtomicInteger mCount = new AtomicInteger(1);
-
-        public Thread newThread(Runnable r) {
-            return new Thread(r, "AsyncTask #" + mCount.getAndIncrement());
-        }
-    };
-    private static final BlockingQueue<Runnable> sPoolWorkQueue = new LinkedBlockingQueue<Runnable>(10);
-    public static final Executor fixedThreadPool = new ThreadPoolExecutor(
-            CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, sPoolWorkQueue, sThreadFactory, new ThreadPoolExecutor.DiscardOldestPolicy());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
