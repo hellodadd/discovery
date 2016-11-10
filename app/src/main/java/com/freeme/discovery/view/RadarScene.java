@@ -1,34 +1,27 @@
 package com.freeme.discovery.view;
 
-import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
+import android.view.ViewConfiguration;
 import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
-import android.view.animation.TranslateAnimation;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.freeme.discovery.R;
-import com.freeme.discovery.common.AsyncImageCache;
 import com.freeme.discovery.models.AppInfo;
 import com.freeme.discovery.models.ShopInfo;
 import com.freeme.discovery.models.VideoInfo;
@@ -38,9 +31,7 @@ import com.freeme.discovery.ui.adapter.ShopAdapter;
 import com.freeme.discovery.ui.adapter.VideoAdapter;
 import com.freeme.discovery.utils.CommonUtils;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 
@@ -55,6 +46,7 @@ public class RadarScene extends FrameLayout {
     private int LcdWidth;
     private int LcdHeight;
     private float mRotateAngle = 0.0f;
+    float lastDegrees;
     float lastX;
     float lastY;
     private TextView disdanceView[] = new TextView[4];
@@ -63,6 +55,14 @@ public class RadarScene extends FrameLayout {
     private onItemClickListener onItemClickListener;
 
     private BaseAdapter baseAdapter;
+
+    private int mTouchMode = -1;
+    private int mTouchSlop;
+    private static int TOUCH_MODE_DOWN = 0;
+    private static int TOUCH_MODE_UP = 1;
+    private static int TOUCH_MODE_MOVE = 1;
+    int mMotionX;
+    int mMotionY;
 
     final static int MSG_RADAR_SCAN_ANI = 1;
     final static int MSG_DEFAULT_ROTATE_SPEED = 2;
@@ -102,6 +102,9 @@ public class RadarScene extends FrameLayout {
 
         LcdWidth = context.getResources().getDisplayMetrics().widthPixels;
         LcdHeight = context.getResources().getDisplayMetrics().heightPixels;
+
+        final ViewConfiguration configuration = ViewConfiguration.get(mContext);
+        mTouchSlop = configuration.getScaledTouchSlop();
 
         setWillNotDraw(false);
 
@@ -279,6 +282,7 @@ public class RadarScene extends FrameLayout {
 
     private void updateAngle(float angle){
             mRotateAngle = angle;
+            lastDegrees = angle;
             mBottomCicyleView.setRotation(-angle);
 
             for(int i = 0; i < getChildCount(); i++){
@@ -319,18 +323,40 @@ public class RadarScene extends FrameLayout {
     }
 
     public boolean onInterceptTouchEvent(MotionEvent motionEvent){
-        if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
-            return true;
+        int event = motionEvent.getActionMasked();
+        boolean ret = false;
+        switch (event){
+            case MotionEvent.ACTION_DOWN:
+                mMotionX = (int) motionEvent.getX();
+                mMotionY = (int) motionEvent.getY();
+                mTouchMode = TOUCH_MODE_DOWN;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int x = (int) motionEvent.getX();
+                int y = (int) motionEvent.getY();
+                if(mTouchMode == TOUCH_MODE_DOWN){
+                    final int deltaX = x - mMotionX;
+                    final int deltaY = y - mMotionY;
+                    lastX = x;
+                    lastY = y;
+                    if(Math.abs(deltaX) > mTouchSlop || Math.abs(deltaY) > mTouchSlop){
+                        mTouchMode = TOUCH_MODE_MOVE;
+                        ret = true;
+                    }
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                mTouchMode = TOUCH_MODE_UP;
+                break;
         }
-        return false;
+        return ret;
     }
 
-    float lastDegrees;
     public boolean onTouchEvent(MotionEvent motionEvent){
+        boolean ret = true;
+
         float x = motionEvent.getX();
         float y = motionEvent.getY();
-
-        lastDegrees = mRotateAngle;
 
         int event = motionEvent.getActionMasked();
         switch (event){
@@ -357,9 +383,10 @@ public class RadarScene extends FrameLayout {
                 break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                mTouchMode = TOUCH_MODE_UP;
                 mHandler.sendEmptyMessage(MSG_DEFAULT_ROTATE_SPEED);
         }
-        return true;
+        return ret;
     }
 
     private float getDistance(float x, float y, float x1, float y1){
